@@ -1,5 +1,4 @@
-
-module Data.Graph.Random (
+module Data.Graph.Random.ErdosRenyi (
     )
     where
 

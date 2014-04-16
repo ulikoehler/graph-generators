@@ -35,20 +35,14 @@ selectRandomElement gen (ms, msSize) = do
     r <- uniformR (0, msSize - 1) gen
     return $ selectNth r msOccurList
 
--- | Convert an occur list to a weight vector in the same order (but losing the element information)
---   This is required in order to 
-occurListToTable :: [(Int, Int)] -> CondensedTableU Int
-occurListToTable = 
-    let toW32List :: [(Int, Int)] -> [(Int, Word32)]
-        toW32List = map (second fromIntegral)
-    in tableFromIntWeights . fromList . toW32List
-
 -- | Select n distinct random elements from a multiset, with
 --   This function will fail to terminate if there are less than n distinct
 --   elements in the multiset. This function accepts a multiset with
 --   precomputed size for performance reasons
 selectNDistinctRandomElements :: GenIO -> Int -> (IntMultiSet, Int) -> IO [Int]
-selectNDistinctRandomElements gen n (ms, msSize) = undefined
+selectNDistinctRandomElements gen n (ms, msSize) = do
+    let cumList = scanl1 (+) $ IntMultiSet.toOccurList ms
+    undefined
 
 -- | Internal recursive worker for selectNDistinctRandomElements
 --selectNDistinctRandomElementsWorker :: GenIO -> Int -> (IntMultiSet, Int) -> IntSet -> IO (Set Int)

@@ -21,14 +21,14 @@ import Data.Vector.Generic (Vector)
 import Data.Vector.Unboxed (fromList)
 import qualified Data.IntMultiSet as IntMultiSet
 
--- | Select the nth element from a multiset occur list
+-- | Select the nth element from a multiset occur list, treating it as virtual large list
 selectNth :: Int -> [(Int, Int)] -> Int
 selectNth _ [] = error "Can't select nth element - n is greater than list size"
 selectNth n ((a,c):xs)
     | n <= c = a
     | otherwise = selectNth (n-c) xs
 
--- | Select n distinct random element from the multiset, with precalculated size
+-- | Select a single random element from the multiset, with precalculated size
 selectRandomElement :: GenIO -> (IntMultiSet, Int) -> IO Int
 selectRandomElement gen (ms, msSize) = do
     let msOccurList = IntMultiSet.toOccurList ms

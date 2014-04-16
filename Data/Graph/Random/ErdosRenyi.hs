@@ -1,3 +1,10 @@
+{-
+  Implementations of binomially random graphs, as described by Erdős and Rényi.
+
+  Graphs generated using this method have a constant edge probability between two nodes.
+
+  See Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
+-}
 module Data.Graph.Random.ErdosRenyi (
         -- ** Graph generators
         erdosRenyiGraph,
@@ -38,7 +45,7 @@ erdosRenyiContext gen n allNodes p = do
     return (inEdges, n, outEdges)
 
 {-
-    Generate a unlabelled random graph using the Algorithm introduced by
+    Generate a unlabelled directed random graph using the Algorithm introduced by
     Erdős and Rényi, also called a binomial random graph generator.
 
     Note that self-loops with also be generated with probability p.
@@ -55,7 +62,7 @@ erdosRenyiContext gen n allNodes p = do
     ...
 
     Modelled after NetworkX 1.8.1 erdos_renyi_graph().
-    See Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
+    
 -}
 erdosRenyiGraph :: GenIO  -- ^ The random number generator to use
            -> Int    -- ^ The number of nodes
@@ -76,7 +83,7 @@ erdosRenyiGraph gen n p = do
     By using this function, you don't have to initialize the generator by yourself,
     however generator initialization is slow, so reusing the generator is recommended.
 
-    Example usage:
+    Usage example:
 
     > erdosRenyiGraph' 10 0.1
 -}

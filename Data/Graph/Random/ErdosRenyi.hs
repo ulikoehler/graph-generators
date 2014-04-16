@@ -1,4 +1,11 @@
 module Data.Graph.Random.ErdosRenyi (
+        -- ** Graph generators
+        erdosRenyiGraph,
+        erdosRenyiGraph',
+        -- ** Graph component generators
+        erdosRenyiContext,
+        -- ** Utility functions
+        selectWithProbability
     )
     where
 
@@ -6,23 +13,6 @@ import System.Random.MWC
 import Control.Monad
 import Data.Graph.Inductive
 import Control.Applicative ((<$>))
-
-asDouble :: Double -> Double
-asDouble = id
-
-{-
-    Filter a list by selecting each list element
-    uniformly with a given probability p
--}
-selectWithProbability :: GenIO  -- ^ The random generator state
-                      -> Double -- ^ The probability to select each list element
-                      -> [a]    -- ^ The list to filter
-                      -> IO [a] -- ^ The filtered list  
-selectWithProbability gen p [] = return []
-selectWithProbability gen p (x:xs) = do
-    r <- uniform gen :: IO Double
-    let v = if r <= p then [x] else []
-    (liftM2 (++)) (return v) $ selectWithProbability gen p xs
 
 {-
     Generate a unlabelled context using the Erdős and Rényi method.
@@ -41,8 +31,8 @@ erdosRenyiContext :: GenIO  -- ^ The random number generator to use
                      --   from or to the given node
            -> Double -- ^ The probability for any pair of nodes to be connected
            -> IO UContext -- ^ The resulting graph (IO required for randomness)
-erdosRenyiContext gen n nodes p = do
-    let endpoints = selectWithProbability gen p nodes
+erdosRenyiContext gen n allNodes p = do
+    let endpoints = selectWithProbability gen p allNodes
     inEdges <- endpoints
     outEdges <- endpoints
     return (inEdges, n, outEdges)
@@ -50,6 +40,8 @@ erdosRenyiContext gen n nodes p = do
 {-
     Generate a unlabelled random graph using the Algorithm introduced by
     Erdős and Rényi, also called a binomial random graph generator.
+
+    Note that self-loops with also be generated with probability p.
 
     This algorithm runs in O(n²) and is best suited for non-sparse networks.
 
@@ -70,13 +62,13 @@ erdosRenyiGraph :: GenIO  -- ^ The random number generator to use
            -> Double -- ^ The probability for any pair of nodes to be connected
            -> IO UGr -- ^ The resulting graph (IO required for randomness)
 erdosRenyiGraph gen n p = do
-    let nodes = [1..n]
+    let allNodes = [1..n]
     -- Outgoing edge targets for any node
-    let outgoingEdgeTargets = selectWithProbability gen p nodes
+    let outgoingEdgeTargets = selectWithProbability gen p allNodes
     -- Outgoing edge tuples for a single nodes
-    let edges n = zip (repeat n) <$> outgoingEdgeTargets
-    allEdges <- concat <$> mapM edges nodes
-    return $ mkUGraph nodes allEdges
+    let singleNodeEdges node = zip (repeat node) <$> outgoingEdgeTargets
+    allEdges <- concat <$> mapM singleNodeEdges allNodes
+    return $ mkUGraph allNodes allEdges
 
 {-
     Like 'erdosRenyiGraph', but uses a fresh random number generator.
@@ -93,3 +85,19 @@ erdosRenyiGraph' :: Int    -- ^ The number of nodes
                  -> IO UGr -- ^ The resulting graph (IO required for randomness)
 erdosRenyiGraph' n p =
     withSystemRandom . asGenIO $ \gen -> erdosRenyiGraph gen n p
+
+{-
+    Filter a list by selecting each list element
+    uniformly with a given probability p
+
+    Although this is mainly used internally, it can be used as general utility function
+-}
+selectWithProbability :: GenIO  -- ^ The random generator state
+                      -> Double -- ^ The probability to select each list element
+                      -> [a]    -- ^ The list to filter
+                      -> IO [a] -- ^ The filtered list  
+selectWithProbability _   _ [] = return []
+selectWithProbability gen p (x:xs) = do
+    r <- uniform gen :: IO Double
+    let v = [x | r <= p]
+    liftM2 (++) (return v) $ selectWithProbability gen p xs

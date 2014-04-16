@@ -80,8 +80,14 @@ barabasiAlbertGraph gen n m = do
      -- (Our state: repeated nodes, current targets, edges)
     let initState = (IntMultiSet.empty, [1..m-1], [])
     let fn = forM_ [m..n] $ \curNode -> do
-        (repeatedNodes, targets, edges) <- get
-        let msWithSize = (repeatedNodes, IntMultiSet.size repeatedNodes)
-        let newEdges = map (\t -> (curNode, n)) targets
-        newTargets <- liftIO $ selectNDistinctRandomElements gen m msWithSize
-        put (newRepeatedNodes, newTargets, edges ++ newEdges)
+            (repeatedNodes, targets, edges) <- get
+            let msWithSize = (repeatedNodes, IntMultiSet.size repeatedNodes)
+            newTargets <- liftIO $ selectNDistinctRandomElements gen m msWithSize
+            -- Create all edges to add
+            let newEdges = map (\t -> (curNode, t)) targets
+            -- Create new list 
+            let newRepeatedNodes = foldl' (flip IntMultiSet.insert) repeatedNodes targets
+            let newRepeatedNodes' = IntMultiSet.insertMany curNode m newRepeatedNodes
+            put (newRepeatedNodes', newTargets, edges ++ newEdges)
+    x <- execState initState fn
+    undefined

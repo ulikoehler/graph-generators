@@ -1,108 +1,13 @@
 {-
-  Generators for deterministic graphs
+  Generators for classic non-parametric graphs.
+
+  Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
 -}
 
-module Data.Graph.Generators (
+module Data.Graph.Generators.Classic (
     ) where
 
 import Data.Graph.Inductive
-
-{-
-    Generate a completely connected graph with n nodes.
-
-    The generated graph contains node labels [0..n-1]
-
-    In contrast to 'completeGraphWithSelfloops' this function
-    does not generate self-loops.
-
-    Note that the resulting graph contains both edge directions.
--}
-completeGraph :: Int -- ^ The number of nodes in the graph
-              -> UGr -- ^ The resulting complete graph
-completeGraph n =
-    let allNodes = [0..n-1]
-        allEdges = [(i,j) | i <- allNodes, j <- allNodes, i /= j]
-    in mkUGraph allNodes allEdges
-
-{-
-    Variant of 'completeGraph' generating self-loops.
-
-    See 'completeGraph' for a more detailed behaviour description
--}
-completeGraphWithSelfloops :: Int -- ^ The number of nodes in the graph
-                         -> UGr -- ^ The resulting complete graph
-completeGraphWithSelfloops n =
-    let allNodes = [0..n-1]
-        allEdges = [(i, j) | i <- allNodes, j <- allNodes]
-    in mkUGraph allNodes allEdges
-
-{-
-    Generate the complete bipartite graph with n1 nodes in
-    the first partition and n2 nodes in the second partition.
-
-    Each node in the first partition is connected to each node
-    in the second partition.
-
-    The first partition nodes are identified by [0..n1-1]
-    while the nodes in the second partition are identified
-    by [n1..n1+n2-1]
--}
-completeBipartiteGraph :: Int -- ^ The number of nodes in the first partition
-                       -> Int -- ^ The number of nodes in the second partition
-                       -> UGr -- ^ The resulting graph
-completeBipartiteGraph n1 n2 =
-    let nodesP1 = [0..n1-1]
-        nodesP2 = [n1..n1+n2-1]
-        allEdges = [(i, j) | i <- nodesP1, j <- nodesP2]
-    in mkUGraph (nodesP1 ++ nodesP2) allEdges
-
-{-
-    Generates the empty graph with n nodes and zero edges.
-
-    The nodes are labelled [0..n-1]
--}
-emptyGraph :: Int -> UGr
-emptyGraph n = mkUGraph [0..n-1] []
-
-{-
-    Generate the barbell graph, consisting of two complete subgraphs
-    connected by a single path.
-
-    In contrast to 'generalizedBarbellGraph', this function always
-    generates identically-sized bells. Therefore this is a special
-    case of 'generalizedBarbellGraph'
--}
-barbellGraph :: Int -- ^ The number of nodes in the complete bells
-             -> Int -- ^ The number of nodes in the path,
-                    --   i.e the number of nodes outside the bells
-             -> UGr -- ^ The resulting barbell graph
-barbellGraph n np = generalizedBarbellGraph n np n
-
-{-
-    Generate the barbell graph, consisting of two complete subgraphs
-    connected by a single path.
-
-    Self-loops are not generated.
-
-    The nodes in the first bell are identified by [0..n1-1]
-    The nodes in the path are identified by [n1..n1+np-1]
-    The nodes in the second bell are identified by [n1+np..n1+np+n2-1]
-
-    The path only contains edges 
--}
-generalizedBarbellGraph :: Int -- ^ The number of nodes in the first bell
-                        -> Int -- ^ The number of nodes in the path, i.e.
-                               --   the number of nodes outside the bells
-                        -> Int -- ^ The number of nodes in the second bell
-                        -> UGr -- ^ The resulting barbell graph
-generalizedBarbellGraph n1 np n2 =
-    let nodesP1 = [0..n1-1]
-        nodesPath = [n1..n1+np-1]
-        nodesP2 = [n1+np..n1+np+n2-1]
-        edgesP1 = [(i, j) | i <- nodesP1, j <- nodesP1, i /= 2]
-        edgesPath = [(i, i+1) | i <- [n1+np..n1+np+n2]]
-        edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
-    in mkUGraph (nodesP1 ++ nodesPath ++ nodesP2) (edgesP1 ++ edgesPath ++ edgesP2)
 
 {-
     Generates the Bull graph.
@@ -298,7 +203,7 @@ icosahedralGraph =
     in mkUGraph nodes edges
 
 {-
-    Generate the Krackhardt Kite Graph.
+    Generate the Krackhardt-Kite Graph.
 
     Contains only one edge between two connected nodes,
     use 'Data.Graph.Inductive.Basic.undir' to make it
@@ -307,10 +212,84 @@ icosahedralGraph =
 krackhardtKiteGraph :: UGr
 krackhardtKiteGraph =
     let nodes = [0..9]
-        edges = [(0,8),(0,1),(0,11),(0,5),(0,7),(1,8),(1,2),(1,5),
-                 (1,6),(2,8),(2,3),(2,6),(2,9),(3,9),(3,4),(3,10),
-                 (3,6),(4,11),(4,10),(4,5),(4,6),(5,11),(5,6),(7,8),
-                 (7,10),(7,11),(7,9),(8,9),(9,10),(10,11)]
+        edges = [(0,1),(0,2),(0,3),(0,5),(1,3),(1,4),(1,6),(2,3),
+                 (2,5),(3,4),(3,5),(3,6),(4,6),(5,6),(5,7),(6,7),
+                 (7,8),(8,9)]
     in mkUGraph nodes edges
 
-moebius_kantor_graph :: UGr
+{-
+    Generate the Möbius-Kantor Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+moebiusKantorGraph :: UGr
+moebiusKantorGraph =
+    let nodes = [0..15]
+        edges = [(0,1),(0,5),(0,15),(1,2),(1,12),(2,3),(2,7),(3,4),
+                 (3,14),(4,9),(4,5),(5,6),(6,11),(6,7),(7,8),(8,9),
+                 (8,13),(9,10),(10,11),(10,15),(11,12),(12,13),(13,14),(14,15)]
+    in mkUGraph nodes edges
+
+chvatalGraph :: UGr
+chvatalGraph =
+    let nodes = [0..11]
+        edges = [(0,1),(0,4),(0,6),(0,9),(1,2),(1,5),(1,7),(2,8),(2,3),
+                 (2,6),(3,9),(3,4),(3,7),(4,8),(4,5),(5,10),(5,11),(6,11),
+                 (6,10),(7,8),(7,11),(8,10),(9,11),(9,10)]
+    in mkUGraph nodes edges
+
+
+cubicalGraph :: UGr
+cubicalGraph =
+    let nodes = [0..7]
+        edges = [(0,1),(0,3),(0,4),(1,2),(1,7),(2,3),(2,6),(3,5),(4,5),
+                 (4,7),(5,6),(6,7)]
+    in mkUGraph nodes edges
+
+desarguesGraph :: UGr
+desarguesGraph =
+    let nodes = [0..19]
+        edges = [(0,1),(0,19),(0,5),(1,16),(1,2),(2,11),(2,3),(3,4),
+                 (3,14),(4,9),(4,5),(5,6),(6,15),(6,7),(7,8),(7,18),
+                 (8,9),(8,13),(9,10),(10,19),(10,11),(11,12),(12,17),
+                 (12,13),(13,14),(14,15),(15,16),(16,17),(17,18),(18,19)]
+    in mkUGraph nodes edges
+
+tetrahedralGraph :: UGr
+tetrahedralGraph =
+    let nodes = [0..3]
+        edges = [(0,1),(0,2),(0,3),(1,2),(1,3),(2,3)]
+    in mkUGraph nodes edges
+
+truncatedCubeGraph :: UGr
+truncatedCubeGraph =
+    let nodes = [0..23]
+        edges = [(0,1),(0,2),(0,4),(1,11),(1,14),(2,3),(2,4),(3,8),(3,6),
+                 (4,5),(5,16),(5,18),(6,8),(6,7),(7,10),(7,12),(8,9),(9,17),
+                 (9,20),(10,11),(10,12),(11,14),(12,13),(13,21),(13,22),
+                 (14,15),(15,19),(15,23),(16,17),(16,18),(17,20),(18,19),
+                 (19,23),(20,21),(21,22),(22,23)]
+    in mkUGraph nodes edges
+
+truncatedTetrahedronGraph :: UGr
+truncatedTetrahedronGraph =
+    let nodes = [0..11]
+        edges = [(0,1),(0,2),(0,9),(1,2),(1,6),(2,3),(3,11),(3,4),(4,11),
+                 (4,5),(5,6),(5,7),(6,7),(7,8),(8,9),(8,10),(9,10),(10,11)]
+    in mkUGraph nodes edges
+
+tutteGraph :: UGr
+tutteGraph =
+    let nodes = [0..45]
+        edges = [(0,1),(0,2),(0,3),(1,26),(1,4),(2,10),(2,11),(3,18),(3,19),
+                 (4,5),(4,33),(5,29),(5,6),(6,27),(6,7),(7,8),(7,14),(8,9),
+                 (8,38),(9,10),(9,37),(10,39),(11,12),(11,39),(12,35),(12,13),
+                 (13,14),(13,15),(14,34),(15,16),(15,22),(16,17),(16,44),
+                 (17,18),(17,43),(18,45),(19,20),(19,45),(20,41),(20,21),
+                 (21,22),(21,23),(22,40),(23,24),(23,27),(24,32),(24,25),
+                 (25,26),(25,31),(26,33),(27,28),(28,32),(28,29),(29,30),
+                 (30,33),(30,31),(31,32),(34,35),(34,38),(35,36),(36,37),
+                 (36,39),(37,38),(40,41),(40,44),(41,42),(42,43),(42,45),(43,44)]
+    in mkUGraph nodes edges

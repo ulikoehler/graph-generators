@@ -232,3 +232,85 @@ petersenGraph =
                  (2,7),(3,8),(3,4),(4,9),(5,8),(5,7),
                  (6,8),(6,9),(7,9)]
     in mkUGraph nodes edges
+
+{-
+    Generate the Heawood Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+heawoodGraph :: UGr
+heawoodGraph =
+    let nodes = [0..13]
+        edges = [(0,1),(0,13),(0,5),(1,2),(1,10),(2,3),
+                 (2,7),(3,12),(3,4),(4,9),(4,5),(5,6),
+                 (6,11),(6,7),(7,8),(8,9),(8,13),(9,10),
+                 (10,11),(11,12),(12,13)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Diamond Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+diamondGraph :: UGr
+diamondGraph =
+    let nodes = [0..3]
+        edges = [(0,1),(0,2),(1,2),(1,3),(2,3)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the dodecahedral Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+dodecahedralGraph :: UGr
+dodecahedralGraph =
+    let nodes = [0..19]
+        edges = [(0,1),(0,10),(0,19),(1,8),(1,2),(2,3),
+                 (2,6),(3,19),(3,4),(4,17),(4,5),(5,6),
+                 (5,15),(6,7),(7,8),(7,14),(8,9),(9,10),
+                 (9,13),(10,11),(11,12),(11,18),(12,16),
+                 (12,13),(13,14),(14,15),(15,16),(16,17),
+                 (17,18),(18,19)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the icosahedral Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+icosahedralGraph :: UGr
+icosahedralGraph =
+    let nodes = [0..11]
+        edges = [(0,8),(0,1),(0,11),(0,5),(0,7),(1,8),(1,2),
+                 (1,5),(1,6),(2,8),(2,3),(2,6),(2,9),(3,9),
+                 (3,4),(3,10),(3,6),(4,11),(4,10),(4,5),(4,6),
+                 (5,11),(5,6),(7,8),(7,10),(7,11),(7,9),(8,9),
+                 (9,10),(10,11)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Krackhardt Kite Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+krackhardtKiteGraph :: UGr
+krackhardtKiteGraph =
+    let nodes = [0..9]
+        edges = [(0,8),(0,1),(0,11),(0,5),(0,7),(1,8),(1,2),(1,5),
+                 (1,6),(2,8),(2,3),(2,6),(2,9),(3,9),(3,4),(3,10),
+                 (3,6),(4,11),(4,10),(4,5),(4,6),(5,11),(5,6),(7,8),
+                 (7,10),(7,11),(7,9),(8,9),(9,10),(10,11)]
+    in mkUGraph nodes edges
+
+moebius_kantor_graph :: UGr

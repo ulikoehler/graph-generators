@@ -10,7 +10,7 @@ import Data.Graph.Inductive
 {-
     Generate a completely connected graph with n nodes.
 
-    The generated graph contains node labels [1..n]
+    The generated graph contains node labels [0..n-1]
 
     In contrast to 'completeGraphWithSelfloops' this function
     does not generate self-loops.
@@ -20,8 +20,8 @@ import Data.Graph.Inductive
 completeGraph :: Int -- ^ The number of nodes in the graph
               -> UGr -- ^ The resulting complete graph
 completeGraph n =
-    let allNodes = [1..n]
-        allEdges = [(i, j) | i <- allNodes, j <- allNodes, i /= j]
+    let allNodes = [0..n-1]
+        allEdges = [(i,j) | i <- allNodes, j <- allNodes, i /= j]
     in mkUGraph allNodes allEdges
 
 {-
@@ -32,7 +32,7 @@ completeGraph n =
 completeGraphWithSelfloops :: Int -- ^ The number of nodes in the graph
                          -> UGr -- ^ The resulting complete graph
 completeGraphWithSelfloops n =
-    let allNodes = [1..n]
+    let allNodes = [0..n-1]
         allEdges = [(i, j) | i <- allNodes, j <- allNodes]
     in mkUGraph allNodes allEdges
 
@@ -43,26 +43,26 @@ completeGraphWithSelfloops n =
     Each node in the first partition is connected to each node
     in the second partition.
 
-    The first partition nodes are identified by [1..n1]
+    The first partition nodes are identified by [0..n1-1]
     while the nodes in the second partition are identified
-    by [n1+1..n1+n2]
+    by [n1..n1+n2-1]
 -}
 completeBipartiteGraph :: Int -- ^ The number of nodes in the first partition
                        -> Int -- ^ The number of nodes in the second partition
                        -> UGr -- ^ The resulting graph
 completeBipartiteGraph n1 n2 =
-    let nodesP1 = [1..n1]
-        nodesP2 = [n1+1..n1+n2]
+    let nodesP1 = [0..n1-1]
+        nodesP2 = [n1..n1+n2-1]
         allEdges = [(i, j) | i <- nodesP1, j <- nodesP2]
     in mkUGraph (nodesP1 ++ nodesP2) allEdges
 
 {-
     Generates the empty graph with n nodes and zero edges.
 
-    The nodes are labelled [1..n]
+    The nodes are labelled [0..n-1]
 -}
 emptyGraph :: Int -> UGr
-emptyGraph n = mkUGraph [1..n] []
+emptyGraph n = mkUGraph [0..n-1] []
 
 {-
     Generate the barbell graph, consisting of two complete subgraphs
@@ -84,9 +84,9 @@ barbellGraph n np = generalizedBarbellGraph n np n
 
     Self-loops are not generated.
 
-    The nodes in the first bell are identified by [1..n1]
-    The nodes in the path are identified by [n1+1..n1+np]
-    The nodes in the second bell are identified by [n1+np+1..n1+np+n2]
+    The nodes in the first bell are identified by [0..n1-1]
+    The nodes in the path are identified by [n1..n1+np-1]
+    The nodes in the second bell are identified by [n1+np..n1+np+n2-1]
 
     The path only contains edges 
 -}
@@ -96,9 +96,9 @@ generalizedBarbellGraph :: Int -- ^ The number of nodes in the first bell
                         -> Int -- ^ The number of nodes in the second bell
                         -> UGr -- ^ The resulting barbell graph
 generalizedBarbellGraph n1 np n2 =
-    let nodesP1 = [1..n1]
-        nodesPath = [n1+1..n1+np]
-        nodesP2 = [n1+np+1..n1+np+n2]
+    let nodesP1 = [0..n1-1]
+        nodesPath = [n1..n1+np-1]
+        nodesP2 = [n1+np..n1+np+n2-1]
         edgesP1 = [(i, j) | i <- nodesP1, j <- nodesP1, i /= 2]
         edgesPath = [(i, i+1) | i <- [n1+np..n1+np+n2]]
         edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
@@ -112,17 +112,17 @@ generalizedBarbellGraph n1 np n2 =
     quasi-undirected
 
 @
-    1       2
+    0       1
      \     /
-      3---4
+      2---3
        \ /
-        5
+        4
 @
 -}
 bullGraph :: UGr
 bullGraph =
-    let nodes = [1..5]
-        edges = [(1,3),(2,4),(3,4),(3,5),(4,5)]
+    let nodes = [0..4]
+        edges = [(0,2),(1,3),(2,3),(2,4),(3,4)]
     in mkUGraph nodes edges
 
 {-
@@ -136,9 +136,10 @@ bullGraph =
 -}
 fruchtGraph :: UGr
 fruchtGraph =
-    let nodes = [1..12]
-        edges = [(1,8),(2,8),(3,9),(4,10),(5,10),(6,11),(7,11),
-                (8,12),(9,12),(9,10),(11,12)]
+    let nodes = [0..11]
+        edges = [(0,1),(0,6),(0,7),(1,2),(1,7),(2,8),(2,3),
+                 (3,9),(3,4),(4,9),(4,5),(5,10),(5,6),
+                 (6,10),(7,11),(8,9),(8,11),(10,11)]
     in mkUGraph nodes edges
 
 {-
@@ -159,8 +160,8 @@ fruchtGraph =
 -}
 houseGraph :: UGr
 houseGraph =
-    let nodes = [1..5]
-        edges = [(1,2),(1,3),(2,3),(2,4),(3,5),(3,5)]
+    let nodes = [0..4]
+        edges = [(0,1),(0,2),(1,3),(2,3),(2,4),(3,4)]
     in mkUGraph nodes edges
 
 {-
@@ -181,6 +182,53 @@ houseGraph =
 -}
 houseXGraph :: UGr
 houseXGraph =
-    let nodes = [1..5]
-        edges = [(1,2),(1,3),(2,3),(2,4),(3,5),(3,5),(2,5),(3,4)]
+    let nodes = [0..4]
+        edges = [(0,1),(0,2),(0,3),(1,2),(1,3),(2,3),(2,4),(3,4)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Pappus Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+
+    Nodes are labelled [0..17]
+-}
+pappusGraph :: UGr
+pappusGraph =
+    let nodes = [0..17]
+        edges = [(0,1),(0,5),(0,17),(1,8),(1,2),(2,3),(2,13),(3,4),
+                (3,10),(4,5),(4,15),(5,6),(6,11),(6,7),(7,8),(7,14),
+                (8,9),(9,16),(9,10),(10,11),(11,12),(12,17),(12,13),
+                (13,14),(14,15),(15,16),(16,17)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Sedgewick Maze Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+sedgewickMazeGraph :: UGr
+sedgewickMazeGraph =
+    let nodes = [0..7]
+        edges = [(0,2),(0,5),(0,7),(1,7),(2,6),
+                (3,4),(3,5),(4,5),(4,6),(4,7)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Petersen Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
+petersenGraph :: UGr
+petersenGraph =
+    let nodes = [0..9]
+        edges = [(0,1),(0,4),(0,5),(1,2),(1,6),(2,3),
+                 (2,7),(3,8),(3,4),(4,9),(5,8),(5,7),
+                 (6,8),(6,9),(7,9)]
     in mkUGraph nodes edges

@@ -10,6 +10,7 @@ module Data.Graph.Random.BarabasiAlbert (
     ) where
 
 import Control.Monad
+import Data.List (foldl')
 import System.Random.MWC
 import Control.Monad.State.Strict
 import Data.Graph.Inductive
@@ -78,16 +79,17 @@ barabasiAlbertGraph gen n m = do
     -- Highly influenced by NetworkX barabasi_albert_graph()
     let nodes = [1..n] -- Nodes [1..m-1]: Initial nodes
      -- (Our state: repeated nodes, current targets, edges)
-    let initState = (IntMultiSet.empty, [1..m-1], [])
-    let fn = forM_ [m..n] $ \curNode -> do
+    let initState = (IntMultiSet.empty, [1..m-1], [] :: [])
+    let fn :: StateT (IntMultiSet, [Int], [(Int, Int)]) IO a
+        fn = forM_ [m..n] $ \curNode -> do
             (repeatedNodes, targets, edges) <- get
             let msWithSize = (repeatedNodes, IntMultiSet.size repeatedNodes)
             newTargets <- liftIO $ selectNDistinctRandomElements gen m msWithSize
             -- Create all edges to add
-            let newEdges = map (\t -> (curNode, t)) targets
+            let newEdges = map (\t -> (curNode, t) :: (Int, Int)) targets
             -- Create new list 
             let newRepeatedNodes = foldl' (flip IntMultiSet.insert) repeatedNodes targets
             let newRepeatedNodes' = IntMultiSet.insertMany curNode m newRepeatedNodes
-            put (newRepeatedNodes', newTargets, edges ++ newEdges)
-    x <- execState initState fn
-    undefined
+            return $ put (newRepeatedNodes', newTargets, edges ++ newEdges)
+    (_, _, allEdges) <- runStateT $ initState fn
+    return $ mkUGraph nodes allEdges

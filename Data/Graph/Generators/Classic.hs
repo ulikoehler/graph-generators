@@ -5,9 +5,38 @@
 -}
 
 module Data.Graph.Generators.Classic (
+        trivialGraph,
+        bullGraph,
+        chvatalGraph,
+        cubicalGraph,
+        desarguesGraph,
+        diamondGraph,
+        dodecahedralGraph,
+        fruchtGraph,
+        heawoodGraph,
+        houseGraph,
+        houseXGraph,
+        icosahedralGraph,
+        krackhardtKiteGraph,
+        moebiusKantorGraph,
+        octahedralGraph,
+        pappusGraph,
+        petersenGraph,
+        sedgewickMazeGraph,
+        tetrahedralGraph,
+        truncatedCubeGraph,
+        truncatedTetrahedronGraph,
+        tutteGraph
     ) where
 
 import Data.Graph.Inductive
+
+{-
+    Generates the trivial graph, containing only one node
+    and no edges
+-}
+trivialGraph :: UGr
+trivialGraph = mkUGraph [0]
 
 {-
     Generates the Bull graph.
@@ -231,6 +260,14 @@ moebiusKantorGraph =
                  (3,14),(4,9),(4,5),(5,6),(6,11),(6,7),(7,8),(8,9),
                  (8,13),(9,10),(10,11),(10,15),(11,12),(12,13),(13,14),(14,15)]
     in mkUGraph nodes edges
+
+octahedralGraph :: UGr
+octahedralGraph =
+    let nodes = [0..5]
+        edges = [(0,1),(0,2),(0,3),(0,4),(1,2),(1,3),(1,5),(2,4),
+                 (2,5),(3,4),(3,5),(4,5)]
+    in mkUGraph nodes edges
+
 
 chvatalGraph :: UGr
 chvatalGraph =

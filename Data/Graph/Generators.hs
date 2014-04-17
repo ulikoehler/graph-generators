@@ -103,3 +103,84 @@ generalizedBarbellGraph n1 np n2 =
         edgesPath = [(i, i+1) | i <- [n1+np..n1+np+n2]]
         edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
     in mkUGraph (nodesP1 ++ nodesPath ++ nodesP2) (edgesP1 ++ edgesPath ++ edgesP2)
+
+{-
+    Generates the Bull graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected
+
+@
+    1       2
+     \     /
+      3---4
+       \ /
+        5
+@
+-}
+bullGraph :: UGr
+bullGraph =
+    let nodes = [1..5]
+        edges = [(1,3),(2,4),(3,4),(3,5),(4,5)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the Frucht Graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected
+
+    See <http://mathworld.wolfram.com/FruchtGraph.html >
+-}
+fruchtGraph :: UGr
+fruchtGraph =
+    let nodes = [1..12]
+        edges = [(1,8),(2,8),(3,9),(4,10),(5,10),(6,11),(7,11),
+                (8,12),(9,12),(9,10),(11,12)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the house graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected
+
+@
+    1
+   / \
+  2---3
+  |   |
+  4---5
+@
+
+-}
+houseGraph :: UGr
+houseGraph =
+    let nodes = [1..5]
+        edges = [(1,2),(1,3),(2,3),(2,4),(3,5),(3,5)]
+    in mkUGraph nodes edges
+
+{-
+    Generate the house X graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected
+
+@
+    1
+   / \
+  2---3
+  | X |
+  4---5
+@
+
+-}
+houseXGraph :: UGr
+houseXGraph =
+    let nodes = [1..5]
+        edges = [(1,2),(1,3),(2,3),(2,4),(3,5),(3,5),(2,5),(3,4)]
+    in mkUGraph nodes edges

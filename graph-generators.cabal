@@ -18,7 +18,7 @@ source-repository head
   location: https://github.com/ulikoehler/graph-generators
 
 library
-  exposed-modules: Data.Graph.Random.ErdosRenyi,
+  exposed-modules: Data.Graph.Random.ErdosRenyi, Data.Graph.Generators
   -- other-modules:
   -- other-extensions:
   build-depends:       base >= 4.2 && < 4.8, containers >= 0.3, mwc-random >= 0.10, fgl >= 5.0

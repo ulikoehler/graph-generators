@@ -18,7 +18,7 @@ module Data.Graph.Generators where
 data GraphInfo = GraphInfo {
                   numNodes :: Int, -- ^ Number of nodes
                   edges :: [(Int,Int)] -- ^ Edge list
-                 }
+                 } deriving (Eq, Show)
 
 {-
     The context of a single graph node.
@@ -31,3 +31,12 @@ data GraphContext = GraphContext {
                         nodeLabel :: Int, -- ^ The node identifier of the current node
                         outEdges :: [Int] -- ^ Nodes having an ingoing edge from the current node
                     }
+
+{-
+    Check the integrity of a GraphInfo instance:
+    Ensures for every edge (i,j), the following condition is met:
+    @0 <= i < n && 0 <= j < n@
+-}
+checkGraphInfo :: GraphInfo -> Bool
+checkGraphInfo (GraphInfo n edges) =
+    all (\(i, j) -> 0 <= i && i < n && 0 <= j && j < n) edges

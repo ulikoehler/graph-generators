@@ -25,7 +25,7 @@ import Data.Graph.Generators
 
     Contains only one edge between two connected nodes,
     use 'Data.Graph.Inductive.Basic.undir' to make it
-    quasi-undirected
+    quasi-undirected. The generated edge (i,j) satisfied @i < j@.
 -}
 completeGraph :: Int -- ^ The number of nodes in the graph
               -> GraphInfo -- ^ The resulting complete graph
@@ -36,6 +36,8 @@ completeGraph n =
 
 {-
     Variant of 'completeGraph' generating self-loops.
+
+    The generated edge (i,j) satisfied @i <= j@.
 
     See 'completeGraph' for a more detailed behaviour description
 -}

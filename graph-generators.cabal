@@ -18,10 +18,22 @@ source-repository head
   location: https://github.com/ulikoehler/graph-generators
 
 library
-  exposed-modules: Data.Graph.Random.ErdosRenyi, Data.Graph.Generators
+  exposed-modules: Data.Graph.Generators,
+                   Data.Graph.Generators.Classic,
+                   Data.Graph.Generators.Simple,
+                   Data.Graph.Generators.FGL,
+                   Data.Graph.Generators.Random.ErdosRenyi,
+                   Data.Graph.Generators.Random.BarabasiAlbert
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >= 4.2 && < 4.8, containers >= 0.3, mwc-random >= 0.10, fgl >= 5.0
+  build-depends:       base >= 4.2 && < 4.8, containers >= 0.3, mwc-random >= 0.10, fgl >= 5.0,
                        multiset >= 0.2
   -- hs-source-dirs:
   default-language:    Haskell2010
+
+Test-Suite test-graph-generators
+    type:       exitcode-stdio-1.0
+    main-is:    GraphGeneratorsTest.hs
+    default-language:    Haskell2010
+    build-depends: base, Cabal >= 1.9.2, hspec, hspec-expectations,
+                   containers >= 0.3, fgl, QuickCheck

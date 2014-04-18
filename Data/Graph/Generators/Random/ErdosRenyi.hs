@@ -5,7 +5,7 @@
 
   See Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
 -}
-module Data.Graph.Random.ErdosRenyi (
+module Data.Graph.Generators.Random.ErdosRenyi (
         -- ** Graph generators
         erdosRenyiGraph,
         erdosRenyiGraph',
@@ -33,8 +33,8 @@ import Control.Applicative ((<$>))
     > 
 -}
 erdosRenyiContext :: GenIO  -- ^ The random number generator to use
-           -> Node    -- ^ Identifier of the context's central node
-           -> [Node]  -- ^ The algorithm will generate random edges to those nodes
+           -> Int     -- ^ Identifier of the context's central node
+           -> [Int]   -- ^ The algorithm will generate random edges to those nodes
                       --   from or to the given node
            -> Double  -- ^ The probability for any pair of nodes to be connected
            -> IO GraphContext -- ^ The resulting graph (IO required for randomness)
@@ -42,7 +42,7 @@ erdosRenyiContext gen n allNodes p = do
     let endpoints = selectWithProbability gen p allNodes
     inEdges <- endpoints
     outEdges <- endpoints
-    return GraphContext inEdges, n, outEdges)
+    return $ GraphContext inEdges n outEdges
 
 {-
     Generate a unlabelled directed random graph using the Algorithm introduced by

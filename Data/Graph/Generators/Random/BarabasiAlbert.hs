@@ -6,7 +6,7 @@
     A. L. Barabási and R. Albert "Emergence of scaling in
        random networks", Science 286, pp 509-512, 1999.
 -}
-module Data.Graph.Random.BarabasiAlbert (
+module Data.Graph.Generators.Random.BarabasiAlbert (
         -- ** Graph generators
         barabasiAlbertGraph,
         barabasiAlbertGraph',
@@ -19,20 +19,21 @@ module Data.Graph.Random.BarabasiAlbert (
 import Control.Monad
 import Data.List (foldl')
 import System.Random.MWC
-import Data.Graph.Inductive
+import Data.Graph.Generators
 import Control.Applicative
 import Data.IntSet (IntSet)
 import qualified Data.IntSet as IntSet
 import Data.IntMultiSet (IntMultiSet)
+import Debug.Trace
 import qualified Data.IntMultiSet as IntMultiSet
 
 -- | Select the nth element from a multiset occur list, treating it as virtual large list
 --   This is significantly faster than building up the entire list and selecting the nth
 --   element
 selectNth :: Int -> [(Int, Int)] -> Int
-selectNth _ [] = error "Can't select nth element - n is greater than list size"
+selectNth n [] = error $ "Can't select nth element - n is greater than list size (n=" ++ (show n) ++ ", list empty)"
 selectNth n ((a,c):xs)
-    | n <= c = a
+    | (n <= c) = a
     | otherwise = selectNth (n-c) xs
 
 -- | Select a single random element from the multiset, with precalculated size
@@ -51,7 +52,7 @@ selectRandomElement gen (ms, msSize) = do
 selectNDistinctRandomElements :: GenIO -> Int -> (IntMultiSet, Int) -> IO [Int]
 selectNDistinctRandomElements gen n t@(ms, msSize)
     | n == msSize = return . map fst . IntMultiSet.toOccurList $ ms
-    | n < msSize = error "Can't select n elements from a set with less than n elements"
+    | (msSize < n) = error "Can't select n elements from a set with less than n elements"
     | otherwise = IntSet.toList <$> selectNDistinctRandomElementsWorker gen n t IntSet.empty
 
 -- | Internal recursive worker for selectNDistinctRandomElements
@@ -98,17 +99,18 @@ barabasiAlbertGraph gen n m = do
     let folder :: BarabasiState -> Int -> IO BarabasiState
         folder st curNode = do
             let (repeatedNodes, targets, edges) = st
-            let msWithSize = (repeatedNodes, IntMultiSet.size repeatedNodes)
-            newTargets <- selectNDistinctRandomElements gen m msWithSize
-            -- Create all edges to add
+            -- Create new edges (for the current node)
             let newEdges = map (\t -> (curNode, t)) targets
-            -- Create new list 
+            -- Add nodes to the repeated nodes multiset
             let newRepeatedNodes = foldl' (flip IntMultiSet.insert) repeatedNodes targets
             let newRepeatedNodes' = IntMultiSet.insertMany curNode m newRepeatedNodes
+            -- Select the new target set randomly from the repeated nodes
+            let repeatedNodesWithSize = (newRepeatedNodes, IntMultiSet.size newRepeatedNodes)
+            newTargets <- selectNDistinctRandomElements gen m repeatedNodesWithSize
             return $ (newRepeatedNodes', newTargets, edges ++ newEdges)
     -- From the final state, we only require the edge list
     (_, _, allEdges) <- foldM folder initState [m..n-1]
-    return $ GraphInfo n-1 allEdges
+    return $ GraphInfo n allEdges
 
 {-
     Like 'barabasiAlbertGraph', but uses a newly initialized random number generator.

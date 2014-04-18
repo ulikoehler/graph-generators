@@ -8,7 +8,8 @@
 -}
 module Data.Graph.Random.BarabasiAlbert (
         -- ** Graph generators
-        barabasiAlbertGraph
+        barabasiAlbertGraph,
+        barabasiAlbertGraph',
         -- ** Utility functions
         selectNth,
         selectRandomElement,
@@ -109,7 +110,6 @@ barabasiAlbertGraph gen n m = do
     (_, _, allEdges) <- foldM folder initState [m..n-1]
     return $ GraphInfo n-1 allEdges
 
-
 {-
     Like 'barabasiAlbertGraph', but uses a newly initialized random number generator.
 
@@ -124,7 +124,7 @@ barabasiAlbertGraph gen n m = do
     > barabasiAlbertGraph' 10 5
 -}
 barabasiAlbertGraph' :: Int    -- ^ The number of nodes
-                 -> Double -- ^ The probability for any pair of nodes to be connected
-                 -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
-barabasiAlbertGraph' n p =
-    withSystemRandom . asGenIO $ \gen -> erdosRenyiGraph gen n p
+                     -> Int    -- ^ The number of edges to create between a new and existing nodes (m)
+                     -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
+barabasiAlbertGraph' n m =
+    withSystemRandom . asGenIO $ \gen -> barabasiAlbertGraph gen n m

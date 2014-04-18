@@ -4,10 +4,16 @@
     Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
 -}
 module Data.Graph.Generators.Simple (
-    )
-where
+        completeGraph,
+        completeGraphWithSelfloops,
+        completeBipartiteGraph,
+        emptyGraph,
+        barbellGraph,
+        generalizedBarbellGraph,
+        cycleGraph
+    ) where
 
-import Data.Graph.Inductive
+import Data.Graph.Generators
 
 {-
     Generate a completely connected graph with n nodes.
@@ -22,11 +28,11 @@ import Data.Graph.Inductive
     quasi-undirected
 -}
 completeGraph :: Int -- ^ The number of nodes in the graph
-              -> UGr -- ^ The resulting complete graph
+              -> GraphInfo -- ^ The resulting complete graph
 completeGraph n =
     let allNodes = [0..n-1]
         allEdges = [(i,j) | i <- allNodes,j <- allNodes, i < j]
-    in GraphInfo allNodes allEdges
+    in GraphInfo n allEdges
 
 {-
     Variant of 'completeGraph' generating self-loops.
@@ -34,11 +40,11 @@ completeGraph n =
     See 'completeGraph' for a more detailed behaviour description
 -}
 completeGraphWithSelfloops :: Int -- ^ The number of nodes in the graph
-                         -> UGr -- ^ The resulting complete graph
+                         -> GraphInfo -- ^ The resulting complete graph
 completeGraphWithSelfloops n =
     let allNodes = [0..n-1]
         allEdges = [(i, j) | i <- allNodes, j <- allNodes, i <= j]
-    in GraphInfo allNodes allEdges
+    in GraphInfo n allEdges
 
 {-
     Generate the complete bipartite graph with n1 nodes in
@@ -56,20 +62,20 @@ completeGraphWithSelfloops n =
 -}
 completeBipartiteGraph :: Int -- ^ The number of nodes in the first partition
                        -> Int -- ^ The number of nodes in the second partition
-                       -> UGr -- ^ The resulting graph
+                       -> GraphInfo -- ^ The resulting graph
 completeBipartiteGraph n1 n2 =
     let nodesP1 = [0..n1-1]
         nodesP2 = [n1..n1+n2-1]
         allEdges = [(i, j) | i <- nodesP1, j <- nodesP2]
-    in GraphInfo (nodesP1 ++ nodesP2) allEdges
+    in GraphInfo (n1+n2) allEdges
 
 {-
     Generates the empty graph with n nodes and zero edges.
 
     The nodes are labelled [0..n-1]
 -}
-emptyGraph :: Int -> UGr
-emptyGraph n = GraphInfo [0..n-1] []
+emptyGraph :: Int -> GraphInfo
+emptyGraph n = GraphInfo n []
 
 {-
     Generate the barbell graph, consisting of two complete subgraphs
@@ -82,7 +88,7 @@ emptyGraph n = GraphInfo [0..n-1] []
 barbellGraph :: Int -- ^ The number of nodes in the complete bells
              -> Int -- ^ The number of nodes in the path,
                     --   i.e the number of nodes outside the bells
-             -> UGr -- ^ The resulting barbell graph
+             -> GraphInfo -- ^ The resulting barbell graph
 barbellGraph n np = generalizedBarbellGraph n np n
 
 {-
@@ -101,7 +107,7 @@ generalizedBarbellGraph :: Int -- ^ The number of nodes in the first bell
                         -> Int -- ^ The number of nodes in the path, i.e.
                                --   the number of nodes outside the bells
                         -> Int -- ^ The number of nodes in the second bell
-                        -> UGr -- ^ The resulting barbell graph
+                        -> GraphInfo -- ^ The resulting barbell graph
 generalizedBarbellGraph n1 np n2 =
     let nodesP1 = [0..n1-1]
         nodesPath = [n1..n1+np-1]
@@ -109,19 +115,15 @@ generalizedBarbellGraph n1 np n2 =
         edgesP1 = [(i, j) | i <- nodesP1, j <- nodesP1, i /= 2]
         edgesPath = [(i, i+1) | i <- [n1+np..n1+np+n2]]
         edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
-    in GraphInfo (nodesP1 ++ nodesPath ++ nodesP2) (edgesP1 ++ edgesPath ++ edgesP2)
+    in GraphInfo (n1+np+n2) (edgesP1 ++ edgesPath ++ edgesP2)
 
 {-
     Generate the cycle graph of size n.
 
-    Nodes are labelled [0..n-1].
-
-    Edges are created from lower node numbers to higher node numbers.
+    Edges are created from lower node IDs to higher node IDs.
 -}
 cycleGraph :: Int -- ^ n: Number of nodes in the circle
-           -> UGr
+           -> GraphInfo -- ^ The circular graph with n nodes.
 cycleGraph n =
-    let nodes = [0..n-1]
-        edges = (n-1,0) : [(i,i+1) | i <- [0..n-2]]
-    in GraphInfo nodes edges
-
+    let edges = (n-1, 0) : [(i, i+1) | i <- [0..n-2]]
+    in GraphInfo n edges

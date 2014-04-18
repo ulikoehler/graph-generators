@@ -7,12 +7,17 @@
        random networks", Science 286, pp 509-512, 1999.
 -}
 module Data.Graph.Random.BarabasiAlbert (
+        -- ** Graph generators
+        barabasiAlbertGraph
+        -- ** Utility functions
+        selectNth,
+        selectRandomElement,
+        selectNDistinctRandomElements
     ) where
 
 import Control.Monad
 import Data.List (foldl')
 import System.Random.MWC
-import Control.Monad.State.Strict
 import Data.Graph.Inductive
 import Control.Applicative
 import Data.IntSet (IntSet)
@@ -49,9 +54,10 @@ selectNDistinctRandomElements gen n t@(ms, msSize)
     | otherwise = IntSet.toList <$> selectNDistinctRandomElementsWorker gen n t IntSet.empty
 
 -- | Internal recursive worker for selectNDistinctRandomElements
---   Precondition: n > num distinct elems in multiset (not checked)
+--   Precondition: n > num distinct elems in multiset (not checked).
+--   Does not terminate if the precondition doesn't apply.
 --   This implementation is quite naive and selects elements randomly until
---   a pre
+--   the predefined number of elements are set.
 selectNDistinctRandomElementsWorker :: GenIO -> Int -> (IntMultiSet, Int) -> IntSet -> IO IntSet
 selectNDistinctRandomElementsWorker _ 0 _ current = return current
 selectNDistinctRandomElementsWorker gen n t@(ms, msSize) current = do
@@ -61,35 +67,64 @@ selectNDistinctRandomElementsWorker gen n t@(ms, msSize) current = do
             then selectNDistinctRandomElementsWorker gen n t current
             else selectNDistinctRandomElementsWorker gen (n-1) t currentWithRE
 
+
+-- | Internal fold state for the Barabasi generator.
+--   TODO: Remove this declaration from global namespace
+type BarabasiState = (IntMultiSet, [Int], [(Int, Int)])
+
 {-
     Generate a random quasi-undirected Barabasi graph.
 
     Only one edge (with nondeterministic direction) is created between a node pair,
     because adding the other edge direction is easier than removing duplicates.
 
+    Precondition (not checked): m <= n
+
     Modeled after NetworkX 1.8.1 barabasi_albert_graph()
 -}
 barabasiAlbertGraph :: GenIO  -- ^ The random number generator to use
                     -> Int    -- ^ The overall number of nodes (n)
                     -> Int    -- ^ The number of edges to create between a new and existing nodes (m)
-                    -> IO UGr -- ^ The resulting graph (IO required for randomness)
+                    -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
 barabasiAlbertGraph gen n m = do
     -- Implementation concept: Iterate over nodes [m..n] in a state monad,
     --   building up the edge list
     -- Highly influenced by NetworkX barabasi_albert_graph()
-    let nodes = [1..n] -- Nodes [1..m-1]: Initial nodes
+    let nodes = [0..n-1] -- Nodes [0..m-1]: Initial nodes
      -- (Our state: repeated nodes, current targets, edges)
-    let initState = (IntMultiSet.empty, [1..m-1], [] :: [])
-    let fn :: StateT (IntMultiSet, [Int], [(Int, Int)]) IO a
-        fn = forM_ [m..n] $ \curNode -> do
-            (repeatedNodes, targets, edges) <- get
+    let initState = (IntMultiSet.empty, [0..m-1], [])
+    -- Strategy: Fold over the list, using a BarabasiState als fold state
+    let folder :: BarabasiState -> Int -> IO BarabasiState
+        folder st curNode = do
+            let (repeatedNodes, targets, edges) = st
             let msWithSize = (repeatedNodes, IntMultiSet.size repeatedNodes)
-            newTargets <- liftIO $ selectNDistinctRandomElements gen m msWithSize
+            newTargets <- selectNDistinctRandomElements gen m msWithSize
             -- Create all edges to add
-            let newEdges = map (\t -> (curNode, t) :: (Int, Int)) targets
+            let newEdges = map (\t -> (curNode, t)) targets
             -- Create new list 
             let newRepeatedNodes = foldl' (flip IntMultiSet.insert) repeatedNodes targets
             let newRepeatedNodes' = IntMultiSet.insertMany curNode m newRepeatedNodes
-            return $ put (newRepeatedNodes', newTargets, edges ++ newEdges)
-    (_, _, allEdges) <- runStateT $ initState fn
-    return $ mkUGraph nodes allEdges
+            return $ (newRepeatedNodes', newTargets, edges ++ newEdges)
+    -- From the final state, we only require the edge list
+    (_, _, allEdges) <- foldM folder initState [m..n-1]
+    return $ GraphInfo n-1 allEdges
+
+
+{-
+    Like 'barabasiAlbertGraph', but uses a newly initialized random number generator.
+
+    See 'System.Random.MWC.withSystemRandom' for details on how the generator is
+    initialized.
+
+    By using this function, you don't have to initialize the generator by yourself,
+    however generator initialization is slow, so reusing the generator is recommended.
+
+    Usage example:
+
+    > barabasiAlbertGraph' 10 5
+-}
+barabasiAlbertGraph' :: Int    -- ^ The number of nodes
+                 -> Double -- ^ The probability for any pair of nodes to be connected
+                 -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
+barabasiAlbertGraph' n p =
+    withSystemRandom . asGenIO $ \gen -> erdosRenyiGraph gen n p

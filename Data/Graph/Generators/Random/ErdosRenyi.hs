@@ -18,7 +18,7 @@ module Data.Graph.Random.ErdosRenyi (
 
 import System.Random.MWC
 import Control.Monad
-import Data.Graph.Inductive
+import Data.Graph.Generators
 import Control.Applicative ((<$>))
 
 {-
@@ -35,14 +35,14 @@ import Control.Applicative ((<$>))
 erdosRenyiContext :: GenIO  -- ^ The random number generator to use
            -> Node    -- ^ Identifier of the context's central node
            -> [Node]  -- ^ The algorithm will generate random edges to those nodes
-                     --   from or to the given node
-           -> Double -- ^ The probability for any pair of nodes to be connected
-           -> IO UContext -- ^ The resulting graph (IO required for randomness)
+                      --   from or to the given node
+           -> Double  -- ^ The probability for any pair of nodes to be connected
+           -> IO GraphContext -- ^ The resulting graph (IO required for randomness)
 erdosRenyiContext gen n allNodes p = do
     let endpoints = selectWithProbability gen p allNodes
     inEdges <- endpoints
     outEdges <- endpoints
-    return (inEdges, n, outEdges)
+    return GraphContext inEdges, n, outEdges)
 
 {-
     Generate a unlabelled directed random graph using the Algorithm introduced by
@@ -52,7 +52,7 @@ erdosRenyiContext gen n allNodes p = do
 
     This algorithm runs in O(n²) and is best suited for non-sparse networks.
 
-    The generated nodes are identified by [1..n].
+    The generated nodes are identified by [0..n-1].
 
     Example usage, using a truly random generator:
     
@@ -67,18 +67,21 @@ erdosRenyiContext gen n allNodes p = do
 erdosRenyiGraph :: GenIO  -- ^ The random number generator to use
            -> Int    -- ^ The number of nodes
            -> Double -- ^ The probability for any pair of nodes to be connected
-           -> IO UGr -- ^ The resulting graph (IO required for randomness)
+           -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
 erdosRenyiGraph gen n p = do
-    let allNodes = [1..n]
+    let allNodes = [0..n-1]
     -- Outgoing edge targets for any node
     let outgoingEdgeTargets = selectWithProbability gen p allNodes
     -- Outgoing edge tuples for a single nodes
     let singleNodeEdges node = zip (repeat node) <$> outgoingEdgeTargets
     allEdges <- concat <$> mapM singleNodeEdges allNodes
-    return $ mkUGraph allNodes allEdges
+    return $ GraphInfo n allEdges
 
 {-
-    Like 'erdosRenyiGraph', but uses a fresh random number generator.
+    Like 'erdosRenyiGraph', but uses a newly initialized random number generator.
+
+    See 'System.Random.MWC.withSystemRandom' for details on how the generator is
+    initialized.
 
     By using this function, you don't have to initialize the generator by yourself,
     however generator initialization is slow, so reusing the generator is recommended.
@@ -89,7 +92,7 @@ erdosRenyiGraph gen n p = do
 -}
 erdosRenyiGraph' :: Int    -- ^ The number of nodes
                  -> Double -- ^ The probability for any pair of nodes to be connected
-                 -> IO UGr -- ^ The resulting graph (IO required for randomness)
+                 -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
 erdosRenyiGraph' n p =
     withSystemRandom . asGenIO $ \gen -> erdosRenyiGraph gen n p
 

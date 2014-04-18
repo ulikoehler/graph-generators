@@ -17,14 +17,16 @@ import Data.Graph.Inductive
     In contrast to 'completeGraphWithSelfloops' this function
     does not generate self-loops.
 
-    Note that the resulting graph contains both edge directions.
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected
 -}
 completeGraph :: Int -- ^ The number of nodes in the graph
               -> UGr -- ^ The resulting complete graph
 completeGraph n =
     let allNodes = [0..n-1]
-        allEdges = [(i,j) | i <- allNodes,j <- allNodes, i /= j]
-    in mkUGraph allNodes allEdges
+        allEdges = [(i,j) | i <- allNodes,j <- allNodes, i < j]
+    in GraphInfo allNodes allEdges
 
 {-
     Variant of 'completeGraph' generating self-loops.
@@ -35,8 +37,8 @@ completeGraphWithSelfloops :: Int -- ^ The number of nodes in the graph
                          -> UGr -- ^ The resulting complete graph
 completeGraphWithSelfloops n =
     let allNodes = [0..n-1]
-        allEdges = [(i, j) | i <- allNodes, j <- allNodes]
-    in mkUGraph allNodes allEdges
+        allEdges = [(i, j) | i <- allNodes, j <- allNodes, i <= j]
+    in GraphInfo allNodes allEdges
 
 {-
     Generate the complete bipartite graph with n1 nodes in
@@ -48,6 +50,9 @@ completeGraphWithSelfloops n =
     The first partition nodes are identified by [0..n1-1]
     while the nodes in the second partition are identified
     by [n1..n1+n2-1]
+
+    Use 'Data.Graph.Inductive.Basic.undir' to also add edges
+    from the second partition to the first partition.
 -}
 completeBipartiteGraph :: Int -- ^ The number of nodes in the first partition
                        -> Int -- ^ The number of nodes in the second partition
@@ -56,7 +61,7 @@ completeBipartiteGraph n1 n2 =
     let nodesP1 = [0..n1-1]
         nodesP2 = [n1..n1+n2-1]
         allEdges = [(i, j) | i <- nodesP1, j <- nodesP2]
-    in mkUGraph (nodesP1 ++ nodesP2) allEdges
+    in GraphInfo (nodesP1 ++ nodesP2) allEdges
 
 {-
     Generates the empty graph with n nodes and zero edges.
@@ -64,7 +69,7 @@ completeBipartiteGraph n1 n2 =
     The nodes are labelled [0..n-1]
 -}
 emptyGraph :: Int -> UGr
-emptyGraph n = mkUGraph [0..n-1] []
+emptyGraph n = GraphInfo [0..n-1] []
 
 {-
     Generate the barbell graph, consisting of two complete subgraphs
@@ -104,4 +109,19 @@ generalizedBarbellGraph n1 np n2 =
         edgesP1 = [(i, j) | i <- nodesP1, j <- nodesP1, i /= 2]
         edgesPath = [(i, i+1) | i <- [n1+np..n1+np+n2]]
         edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
-    in mkUGraph (nodesP1 ++ nodesPath ++ nodesP2) (edgesP1 ++ edgesPath ++ edgesP2)
+    in GraphInfo (nodesP1 ++ nodesPath ++ nodesP2) (edgesP1 ++ edgesPath ++ edgesP2)
+
+{-
+    Generate the cycle graph of size n.
+
+    Nodes are labelled [0..n-1].
+
+    Edges are created from lower node numbers to higher node numbers.
+-}
+cycleGraph :: Int -- ^ n: Number of nodes in the circle
+           -> UGr
+cycleGraph n =
+    let nodes = [0..n-1]
+        edges = (n-1,0) : [(i,i+1) | i <- [0..n-2]]
+    in GraphInfo nodes edges
+

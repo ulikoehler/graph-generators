@@ -36,4 +36,5 @@ Test-Suite test-graph-generators
     main-is:    GraphGeneratorsTest.hs
     default-language:    Haskell2010
     build-depends: base, Cabal >= 1.9.2, hspec, hspec-expectations,
-                   containers >= 0.3, fgl, QuickCheck
+                   containers >= 0.3, fgl, QuickCheck, multiset >= 0.2,
+                   mwc-random

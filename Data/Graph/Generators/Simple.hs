@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 {-
     Graph generators for simple parametric graphs.
 

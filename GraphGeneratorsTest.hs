@@ -4,6 +4,8 @@ import Control.Exception (evaluate)
 import Control.Monad
 import Data.Graph.Generators.Classic
 import Data.Graph.Generators.Simple
+import Data.Graph.Generators.Random.ErdosRenyi
+import Data.Graph.Generators.Random.BarabasiAlbert
 import Data.Graph.Generators
 import Data.Map (Map)
 import Data.Maybe (fromJust)
@@ -39,4 +41,14 @@ main = hspec $ do
   describe "Simple graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..10] $ \n -> 
+            completeGraph n `shouldSatisfy` checkGraphInfo
+  describe "Erdös Renyi random graphs" $ do
+    it "should pass the integrity checks" $ do
+        forM_ [0..20] $ \n -> do
+            gr <- erdosRenyiGraph' n 0.1
+            completeGraph n `shouldSatisfy` checkGraphInfo
+  describe "Barabasi Albert random graphs" $ do
+    it "should pass the integrity checks" $ do
+        forM_ [10..20] $ \n -> do
+            gr <- barabasiAlbertGraph' n 5
             completeGraph n `shouldSatisfy` checkGraphInfo

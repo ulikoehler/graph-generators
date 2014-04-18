@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 {-
   Generators for classic non-parametric graphs.
 

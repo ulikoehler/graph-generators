@@ -62,14 +62,14 @@ main = hspec $ do
             forM_ [1..10] $ \n ->
                 let graph = completeGraphWithSelfloops n
                 in numEdges graph `shouldBe` (n*(n-1) `div` 2) + n
-    describe "Line graphs" $ do
+    describe "Path graphs" $ do
         it "should pass the integrity checks" $ do
             forM_ [0..25] $ \n -> do
-                lineGraph n `shouldSatisfy` checkGraphInfo
+                pathGraph n `shouldSatisfy` checkGraphInfo
         it "should have n-1 edges" $ do
-            lineGraph 0 `shouldSatisfy` hasNumEdges 0
+            pathGraph 0 `shouldSatisfy` hasNumEdges 0
             forM_ [1..25] $ \n ->
-                lineGraph n `shouldSatisfy` hasNumEdges (n-1)
+                pathGraph n `shouldSatisfy` hasNumEdges (n-1)
   describe "Erdös Renyi random graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..20] $ \n -> do

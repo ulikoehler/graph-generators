@@ -13,7 +13,7 @@ module Data.Graph.Generators.Regular (
         barbellGraph,
         generalizedBarbellGraph,
         cycleGraph,
-        lineGraph,
+        pathGraph,
         starGraph,
         wheelGraph
     ) where
@@ -139,13 +139,14 @@ cycleGraph n =
     in GraphInfo n edges
 
 {-
-    Generate the line graph of size n
+    Generate the path graph of size n,
+    consisting of n nodes that are interconnected in a single path.
 -}
-lineGraph :: Int -- ^ n: Number of nodes
+pathGraph :: Int -- ^ n: Number of nodes
           -> GraphInfo
-lineGraph 0 = nullGraph
-lineGraph 1 = GraphInfo 1 []
-lineGraph n =
+pathGraph 0 = nullGraph
+pathGraph 1 = GraphInfo 1 []
+pathGraph n =
     let edges = [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
 

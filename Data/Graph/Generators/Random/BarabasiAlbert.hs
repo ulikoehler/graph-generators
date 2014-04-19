@@ -31,9 +31,9 @@ import qualified Data.IntMultiSet as IntMultiSet
 --   This is significantly faster than building up the entire list and selecting the nth
 --   element
 selectNth :: Int -> [(Int, Int)] -> Int
-selectNth n [] = error $ "Can't select nth element - n is greater than list size (n=" ++ (show n) ++ ", list empty)"
+selectNth n [] = error $ "Can't select nth element - n is greater than list size (n=" ++ show n ++ ", list empty)"
 selectNth n ((a,c):xs)
-    | (n <= c) = a
+    | n <= c = a
     | otherwise = selectNth (n-c) xs
 
 -- | Select a single random element from the multiset, with precalculated size
@@ -52,7 +52,7 @@ selectRandomElement gen (ms, msSize) = do
 selectNDistinctRandomElements :: GenIO -> Int -> (IntMultiSet, Int) -> IO [Int]
 selectNDistinctRandomElements gen n t@(ms, msSize)
     | n == msSize = return . map fst . IntMultiSet.toOccurList $ ms
-    | (msSize < n) = error "Can't select n elements from a set with less than n elements"
+    | msSize < n = error "Can't select n elements from a set with less than n elements"
     | otherwise = IntSet.toList <$> selectNDistinctRandomElementsWorker gen n t IntSet.empty
 
 -- | Internal recursive worker for selectNDistinctRandomElements
@@ -107,7 +107,7 @@ barabasiAlbertGraph gen n m = do
             -- Select the new target set randomly from the repeated nodes
             let repeatedNodesWithSize = (newRepeatedNodes, IntMultiSet.size newRepeatedNodes)
             newTargets <- selectNDistinctRandomElements gen m repeatedNodesWithSize
-            return $ (newRepeatedNodes', newTargets, edges ++ newEdges)
+            return (newRepeatedNodes', newTargets, edges ++ newEdges)
     -- From the final state, we only require the edge list
     (_, _, allEdges) <- foldM folder initState [m..n-1]
     return $ GraphInfo n allEdges

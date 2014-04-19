@@ -1,14 +1,14 @@
 name:                graph-generators
-version:             0.1.1.0
+version:             0.1.2.0
 synopsis:            Functions for generating structured or random FGL graphs
 description:         Generators for graphs.
                      Supports classic (constant-sized) graphs, deterministic Generators
                      and different random graph generators, based on mwc-random.
-
+                     .
                      This library uses a library-agnostic and space-efficient graph
                      representation. Combinators are provided to convert said representation
                      to other graph representations (currently only FGL, see 'Data.Graph.Generators.FGL')
-
+                     .
                      Note that this library is in its early development stages.
                      Don't use it for production code without checking the correctness
                      of the algorithm implementation..
@@ -17,7 +17,7 @@ license:             Apache-2.0
 license-file:        LICENSE
 author:              Uli Köhler
 maintainer:          ukoehler@techoverflow.net
--- copyright:           
+copyright:           Copyright (C) 2014 Uli Köhler
 category:            Graphs, Algorithms
 build-type:          Simple
 extra-source-files:  README.md changelog

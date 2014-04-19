@@ -8,6 +8,8 @@
 * New regular graphs: starGraph, wheelGraph, nullGraph
 * Rename lineGraph to pathGraph (incorrect naming)
 * Add notes about preconditions
+* Add correct copyright declarations
+* Fix several doc formatting issues
 
 
 0.1.0.0 --> 0.1.1.0

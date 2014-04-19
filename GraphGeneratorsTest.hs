@@ -3,7 +3,7 @@ import Test.QuickCheck
 import Control.Exception (evaluate)
 import Control.Monad
 import Data.Graph.Generators.Classic
-import Data.Graph.Generators.Simple
+import Data.Graph.Generators.Regular
 import Data.Graph.Generators.Random.ErdosRenyi
 import Data.Graph.Generators.Random.BarabasiAlbert
 import Data.Graph.Generators
@@ -38,10 +38,15 @@ main = hspec $ do
         truncatedCubeGraph `shouldSatisfy` checkGraphInfo
         truncatedTetrahedronGraph `shouldSatisfy` checkGraphInfo
         tutteGraph `shouldSatisfy` checkGraphInfo
-  describe "Simple graphs" $ do
+  describe "Complete graphs" $ do
     it "should pass the integrity checks" $ do
-        forM_ [0..10] $ \n -> 
+        forM_ [0..10] $ \n ->
             completeGraph n `shouldSatisfy` checkGraphInfo
+    --it "should have n^2/2 edges" $ do
+  describe "Regular graphs" $ do
+    it "should pass the integrity checks" $ do
+        forM_ [0..25] $ \n -> 
+            lineGraph n `shouldSatisfy` checkGraphInfo
   describe "Erdös Renyi random graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..20] $ \n -> do

@@ -1,18 +1,19 @@
 {-# LANGUAGE Safe #-}
 
 {-
-    Graph generators for simple parametric graphs.
+    Graph generators for simple parametric, regular graphs.
 
     Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
 -}
-module Data.Graph.Generators.Simple (
+module Data.Graph.Generators.Regular (
         completeGraph,
         completeGraphWithSelfloops,
         completeBipartiteGraph,
         emptyGraph,
         barbellGraph,
         generalizedBarbellGraph,
-        cycleGraph
+        cycleGraph,
+        lineGraph
     ) where
 
 import Data.Graph.Generators
@@ -130,4 +131,13 @@ cycleGraph :: Int -- ^ n: Number of nodes in the circle
            -> GraphInfo -- ^ The circular graph with n nodes.
 cycleGraph n =
     let edges = (n-1, 0) : [(i, i+1) | i <- [0..n-2]]
+    in GraphInfo n edges
+
+{-
+    Generate the line graph of size n
+-}
+lineGraph :: Int -- ^ n: Number of nodes
+          -> GraphInfo
+lineGraph n =
+    let edges = [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges

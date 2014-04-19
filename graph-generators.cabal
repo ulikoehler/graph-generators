@@ -30,7 +30,7 @@ source-repository head
 library
   exposed-modules: Data.Graph.Generators,
                    Data.Graph.Generators.Classic,
-                   Data.Graph.Generators.Simple,
+                   Data.Graph.Generators.Regular,
                    Data.Graph.Generators.FGL,
                    Data.Graph.Generators.Random.ErdosRenyi,
                    Data.Graph.Generators.Random.BarabasiAlbert

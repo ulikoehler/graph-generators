@@ -11,7 +11,7 @@ description:         Generators for graphs.
                      .
                      Note that this library is in its early development stages.
                      Don't use it for production code without checking the correctness
-                     of the algorithm implementation..
+                     of the algorithm implementation.
 homepage:            https://github.com/ulikoehler/graph-random
 license:             Apache-2.0
 license-file:        LICENSE

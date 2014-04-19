@@ -1,4 +1,4 @@
-graph-random
+graph-generators
 ============
 
-A Haskell library for creating random Data.Graph instances using several pop
+A Haskell library for creating regular and random graphs in a graph-library agnostic way.

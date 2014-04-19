@@ -20,7 +20,7 @@ maintainer:          ukoehler@techoverflow.net
 -- copyright:           
 category:            Graphs, Algorithms
 build-type:          Simple
-extra-source-files:  README.md
+extra-source-files:  README.md changelog
 cabal-version:       >=1.10
 
 source-repository head

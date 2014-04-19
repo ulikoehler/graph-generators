@@ -141,3 +141,14 @@ lineGraph :: Int -- ^ n: Number of nodes
 lineGraph n =
     let edges = [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
+
+{-
+    Generate the star graph with n nodes:
+    One central node (ID 0) connected to n-1
+    outer nodes, having no interconnections themselves
+-}
+starGraph :: Int -- ^ n: Number of overall nodes
+          -> GraphInfo
+starGraph n =
+    let edges = [(0,i) | i <- [1..n-1]]
+    in GraphInfo n edges

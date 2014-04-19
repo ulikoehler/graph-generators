@@ -46,7 +46,7 @@ main = hspec $ do
         forM_ [0..10] $ \n ->
             let graph = completeGraph n
             in numEdges graph `shouldBe` n*(n-1) `div` 2
-    it "should have n^2/2 edges with selfloops" $ do
+    it "should have (n*(n-1) / 2) + n edges with selfloops" $ do
         --Note that the formula doesn't apply for n=1 which has 1 edge (0,0)
         numEdges (completeGraphWithSelfloops 0) `shouldBe` 0
         forM_ [1..10] $ \n ->
@@ -54,8 +54,10 @@ main = hspec $ do
             in numEdges graph `shouldBe` (n*(n-1) `div` 2) + n
   describe "Regular graphs" $ do
     it "should pass the integrity checks" $ do
-        forM_ [0..25] $ \n -> 
+        forM_ [0..25] $ \n -> do
+            cycleGraph n `shouldSatisfy` checkGraphInfo
             lineGraph n `shouldSatisfy` checkGraphInfo
+            starGraph n `shouldSatisfy` checkGraphInfo
   describe "Erdös Renyi random graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..20] $ \n -> do

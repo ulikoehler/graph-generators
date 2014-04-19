@@ -34,13 +34,13 @@ completeGraph :: Int -- ^ The number of nodes in the graph
               -> GraphInfo -- ^ The resulting complete graph
 completeGraph n =
     let allNodes = [0..n-1]
-        allEdges = [(i,j) | i <- allNodes,j <- allNodes, i < j]
+        allEdges = [(i, j) | i <- allNodes,j <- allNodes, i < j]
     in GraphInfo n allEdges
 
 {-
     Variant of 'completeGraph' generating self-loops.
 
-    The generated edge (i,j) satisfied @i <= j@.
+    All generated edges (i,j) satisfy @i <= j@.
 
     See 'completeGraph' for a more detailed behaviour description
 -}

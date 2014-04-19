@@ -42,3 +42,7 @@ data GraphContext = GraphContext {
 checkGraphInfo :: GraphInfo -> Bool
 checkGraphInfo (GraphInfo n edges) =
     all (\(i, j) -> 0 <= i && i < n && 0 <= j && j < n) edges
+
+-- | Get the edge count for a given GraphInfo instance
+numEdges :: GraphInfo -> Int
+numEdges = length . edges

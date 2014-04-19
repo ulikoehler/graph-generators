@@ -70,6 +70,11 @@ main = hspec $ do
             pathGraph 0 `shouldSatisfy` hasNumEdges 0
             forM_ [1..25] $ \n ->
                 pathGraph n `shouldSatisfy` hasNumEdges (n-1)
+    describe "Grid 2D graphs" $ do
+        it "should pass the integrity check" $ do
+            forM_ [0..10] $ \n ->
+                forM_ [0..10] $ \m -> do
+                    grid2DGraph m n `shouldSatisfy` checkGraphInfo
   describe "Erdös Renyi random graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..20] $ \n -> do

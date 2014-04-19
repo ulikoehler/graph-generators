@@ -6,6 +6,8 @@
 * More unit tests for completeGraph variants
 * More unit tests for regular graphs
 * New regular graphs: starGraph, wheelGraph, nullGraph
+* Rename lineGraph to pathGraph (incorrect naming)
+* Add notes about preconditions
 
 
 0.1.0.0 --> 0.1.1.0

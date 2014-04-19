@@ -16,6 +16,9 @@ module Data.Graph.Generators where
 
     This data structure is library-agnostic and can be converted
     to arbitrary representations.
+
+    Copyright (C) 2014 Uli Köhler
+    Apache License v2.0
 -}
 data GraphInfo = GraphInfo {
                   numNodes :: Int, -- ^ Number of nodes

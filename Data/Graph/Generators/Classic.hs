@@ -4,6 +4,18 @@
   Generators for classic non-parametric graphs.
 
   Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
+
+  graph-generators copyright:
+    Copyright (C) 2014 Uli Köhler
+    Apache License v2.0
+
+  NetworkX copyright:
+    Copyright (C) 2004-2010 by 
+    Aric Hagberg <hagberg@lanl.gov>
+    Dan Schult <dschult@colgate.edu>
+    Pieter Swart <swart@lanl.gov>
+    All rights reserved.
+    BSD license.
 -}
 
 module Data.Graph.Generators.Classic (

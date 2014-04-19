@@ -1,6 +1,9 @@
 {-
   Functions to convert graph-generators 'Data.Graph.Generators.GraphInfo'
   to FGL data structures.
+
+  Copyright (C) 2014 Uli Köhler
+  Apache License v2.0
 -}
 module Data.Graph.Generators.FGL (
         graphInfoToUGr

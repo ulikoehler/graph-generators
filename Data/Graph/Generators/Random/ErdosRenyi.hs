@@ -4,6 +4,17 @@
   Graphs generated using this method have a constant edge probability between two nodes.
 
   See Erdős and A. Rényi, On Random Graphs, Publ. Math. 6, 290 (1959).
+
+  graph-generators copyright:
+    Copyright (C) 2014 Uli Köhler
+
+  NetworkX copyright:
+    Copyright (C) 2004-2010 by 
+    Aric Hagberg <hagberg@lanl.gov>
+    Dan Schult <dschult@colgate.edu>
+    Pieter Swart <swart@lanl.gov>
+    All rights reserved.
+    BSD license.
 -}
 module Data.Graph.Generators.Random.ErdosRenyi (
         -- ** Graph generators

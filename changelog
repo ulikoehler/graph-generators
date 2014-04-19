@@ -4,11 +4,12 @@
 ===============
 
 * More unit tests for completeGraph variants
+* More unit tests for regular graphs
+* New regular graphs: starGraph, wheelGraph, nullGraph
 
 
 0.1.0.0 --> 0.1.1.0
 ===============
 
 * Rename Data.Graph.Generators.Simple to Data.Graph.Generators.Regular
-
 * Add lineGraph

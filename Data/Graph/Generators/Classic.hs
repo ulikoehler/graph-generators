@@ -28,7 +28,8 @@ module Data.Graph.Generators.Classic (
         tetrahedralGraph,
         truncatedCubeGraph,
         truncatedTetrahedronGraph,
-        tutteGraph
+        tutteGraph,
+        nullGraph
     ) where
 
 import Data.Graph.Generators
@@ -311,3 +312,9 @@ tutteGraph =
                  (30,33),(30,31),(31,32),(34,35),(34,38),(35,36),(36,37),
                  (36,39),(37,38),(40,41),(40,44),(41,42),(42,43),(42,45),(43,44)]
     in GraphInfo 46 edges
+
+{-
+    The null graph with no nodes and edges
+-}
+nullGraph :: GraphInfo
+nullGraph = GraphInfo 0 []

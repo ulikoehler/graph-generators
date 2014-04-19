@@ -13,10 +13,13 @@ module Data.Graph.Generators.Regular (
         barbellGraph,
         generalizedBarbellGraph,
         cycleGraph,
-        lineGraph
+        lineGraph,
+        starGraph,
+        wheelGraph
     ) where
 
 import Data.Graph.Generators
+import Data.Graph.Generators.Classic (nullGraph)
 
 {-
     Generate a completely connected graph with n nodes.
@@ -129,6 +132,8 @@ generalizedBarbellGraph n1 np n2 =
 -}
 cycleGraph :: Int -- ^ n: Number of nodes in the circle
            -> GraphInfo -- ^ The circular graph with n nodes.
+cycleGraph 0 = GraphInfo 0 []
+cycleGraph 1 = GraphInfo 1 []
 cycleGraph n =
     let edges = (n-1, 0) : [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
@@ -138,6 +143,8 @@ cycleGraph n =
 -}
 lineGraph :: Int -- ^ n: Number of nodes
           -> GraphInfo
+lineGraph 0 = nullGraph
+lineGraph 1 = GraphInfo 1 []
 lineGraph n =
     let edges = [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
@@ -149,6 +156,22 @@ lineGraph n =
 -}
 starGraph :: Int -- ^ n: Number of overall nodes
           -> GraphInfo
+starGraph 0 = nullGraph
+starGraph 1 = GraphInfo 1 []
 starGraph n =
     let edges = [(0,i) | i <- [1..n-1]]
+    in GraphInfo n edges
+
+{-
+    Generate the wheel graph with n nodes:
+    One central node (ID 0) connected to n-1
+    outer nodes building a cycle graph.
+-}
+wheelGraph :: Int -- ^ n: Number of overall nodes
+          -> GraphInfo
+wheelGraph 0 = nullGraph
+wheelGraph 1 = GraphInfo 1 []
+wheelGraph n =
+    let edges = (n-1, 1) : [(0,i) | i <- [1..n-1]]
+                  ++ [(i, i+1) | i <- [1..n-2]]
     in GraphInfo n edges

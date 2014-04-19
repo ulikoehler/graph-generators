@@ -12,6 +12,9 @@ import Data.Maybe (fromJust)
 import Data.List (sort)
 import qualified Data.Map as Map
 
+hasNumEdges :: Int -> GraphInfo -> Bool
+hasNumEdges n = (==n) . numEdges
+
 main :: IO ()
 main = hspec $ do
   describe "Classic graphs" $ do
@@ -38,26 +41,35 @@ main = hspec $ do
         truncatedCubeGraph `shouldSatisfy` checkGraphInfo
         truncatedTetrahedronGraph `shouldSatisfy` checkGraphInfo
         tutteGraph `shouldSatisfy` checkGraphInfo
-  describe "Complete graphs" $ do
-    it "should pass the integrity checks" $ do
-        forM_ [0..10] $ \n ->
-            completeGraph n `shouldSatisfy` checkGraphInfo
-    it "should have n*(n-1)/2 edges without selfloops" $ do
-        forM_ [0..10] $ \n ->
-            let graph = completeGraph n
-            in numEdges graph `shouldBe` n*(n-1) `div` 2
-    it "should have (n*(n-1) / 2) + n edges with selfloops" $ do
-        --Note that the formula doesn't apply for n=1 which has 1 edge (0,0)
-        numEdges (completeGraphWithSelfloops 0) `shouldBe` 0
-        forM_ [1..10] $ \n ->
-            let graph = completeGraphWithSelfloops n
-            in numEdges graph `shouldBe` (n*(n-1) `div` 2) + n
+        nullGraph `shouldSatisfy` checkGraphInfo
   describe "Regular graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..25] $ \n -> do
             cycleGraph n `shouldSatisfy` checkGraphInfo
-            lineGraph n `shouldSatisfy` checkGraphInfo
             starGraph n `shouldSatisfy` checkGraphInfo
+            wheelGraph n `shouldSatisfy` checkGraphInfo
+    describe "Complete graphs" $ do
+        it "should pass the integrity checks" $ do
+            forM_ [0..10] $ \n ->
+                completeGraph n `shouldSatisfy` checkGraphInfo
+        it "should have n*(n-1)/2 edges without selfloops" $ do
+            forM_ [0..10] $ \n ->
+                let graph = completeGraph n
+                in numEdges graph `shouldBe` n*(n-1) `div` 2
+        it "should have (n*(n-1) / 2) + n edges with selfloops" $ do
+            --Note that the formula doesn't apply for n=1 which has 1 edge (0,0)
+            numEdges (completeGraphWithSelfloops 0) `shouldBe` 0
+            forM_ [1..10] $ \n ->
+                let graph = completeGraphWithSelfloops n
+                in numEdges graph `shouldBe` (n*(n-1) `div` 2) + n
+    describe "Line graphs" $ do
+        it "should pass the integrity checks" $ do
+            forM_ [0..25] $ \n -> do
+                lineGraph n `shouldSatisfy` checkGraphInfo
+        it "should have n-1 edges" $ do
+            lineGraph 0 `shouldSatisfy` hasNumEdges 0
+            forM_ [1..25] $ \n ->
+                lineGraph n `shouldSatisfy` hasNumEdges (n-1)
   describe "Erdös Renyi random graphs" $ do
     it "should pass the integrity checks" $ do
         forM_ [0..20] $ \n -> do

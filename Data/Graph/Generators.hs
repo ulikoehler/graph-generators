@@ -2,7 +2,7 @@
 
 module Data.Graph.Generators where
 
-{-
+{-|
     The information required to build a graph.
 
     This datastructure is designed to occupy minimal space.
@@ -25,7 +25,7 @@ data GraphInfo = GraphInfo {
                   edges :: [(Int,Int)] -- ^ Edge list
                  } deriving (Eq, Show)
 
-{-
+{-|
     The context of a single graph node.
 
     This data-structure is library-agnostic, however,
@@ -37,7 +37,7 @@ data GraphContext = GraphContext {
                         outEdges :: [Int] -- ^ Nodes having an ingoing edge from the current node
                     }
 
-{-
+{-|
     Check the integrity of a GraphInfo instance:
     Ensures for every edge (i,j), the following condition is met:
     @0 <= i < n && 0 <= j < n@

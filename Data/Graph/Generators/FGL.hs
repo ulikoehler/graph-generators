@@ -1,4 +1,4 @@
-{-
+{-|
   Functions to convert graph-generators 'Data.Graph.Generators.GraphInfo'
   to FGL data structures.
 
@@ -12,6 +12,7 @@ module Data.Graph.Generators.FGL (
 import Data.Graph.Generators
 import Data.Graph.Inductive
 
+-- | Convert a graph-generators 'GraphInfo' to a FGL 'UGr' (unlabelled)
 graphInfoToUGr :: GraphInfo -- ^ The graph to convert
                -> UGr       -- ^ The resulting FGL graph
 graphInfoToUGr (GraphInfo n edges) =

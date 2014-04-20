@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-{-
+{-|
   Generators for classic non-parametric graphs.
 
   Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
@@ -46,14 +46,14 @@ module Data.Graph.Generators.Classic (
 
 import Data.Graph.Generators
 
-{-
+{-|
     Generates the trivial graph, containing only one node
     and no edges
 -}
 trivialGraph :: GraphInfo
 trivialGraph = GraphInfo 1 []
 
-{-
+{-|
     Generates the Bull graph.
 
     Contains only one edge between two connected nodes,
@@ -73,7 +73,7 @@ bullGraph =
     let edges = [(0,2),(1,3),(2,3),(2,4),(3,4)]
     in GraphInfo 5 edges
 
-{-
+{-|
     Generate the Frucht Graph.
 
     Contains only one edge between two connected nodes,
@@ -89,7 +89,7 @@ fruchtGraph =
                  (6,10),(7,11),(8,9),(8,11),(10,11)]
     in GraphInfo 12 edges
 
-{-
+{-|
     Generate the house graph.
 
     Contains only one edge between two connected nodes,
@@ -110,7 +110,7 @@ houseGraph =
     let edges = [(0,1),(0,2),(1,3),(2,3),(2,4),(3,4)]
     in GraphInfo 5 edges
 
-{-
+{-|
     Generate the house X graph.
 
     Contains only one edge between two connected nodes,
@@ -131,7 +131,7 @@ houseXGraph =
     let edges = [(0,1),(0,2),(0,3),(1,2),(1,3),(2,3),(2,4),(3,4)]
     in GraphInfo 5 edges
 
-{-
+{-|
     Generate the Pappus Graph.
 
     Contains only one edge between two connected nodes,
@@ -148,7 +148,7 @@ pappusGraph =
                 (13,14),(14,15),(15,16),(16,17)]
     in GraphInfo 18 edges
 
-{-
+{-|
     Generate the Sedgewick Maze Graph.
 
     Contains only one edge between two connected nodes,
@@ -161,7 +161,7 @@ sedgewickMazeGraph =
                 (3,4),(3,5),(4,5),(4,6),(4,7)]
     in GraphInfo 8 edges
 
-{-
+{-|
     Generate the Petersen Graph.
 
     Contains only one edge between two connected nodes,
@@ -175,7 +175,7 @@ petersenGraph =
                  (6,8),(6,9),(7,9)]
     in GraphInfo 10 edges
 
-{-
+{-|
     Generate the Heawood Graph.
 
     Contains only one edge between two connected nodes,
@@ -190,7 +190,7 @@ heawoodGraph =
                  (10,11),(11,12),(12,13)]
     in GraphInfo 14 edges
 
-{-
+{-|
     Generate the Diamond Graph.
 
     Contains only one edge between two connected nodes,
@@ -202,7 +202,7 @@ diamondGraph =
     let edges = [(0,1),(0,2),(1,2),(1,3),(2,3)]
     in GraphInfo 4 edges
 
-{-
+{-|
     Generate the dodecahedral Graph.
 
     Contains only one edge between two connected nodes,
@@ -219,7 +219,7 @@ dodecahedralGraph =
                  (17,18),(18,19)]
     in GraphInfo 20 edges
 
-{-
+{-|
     Generate the icosahedral Graph.
 
     Contains only one edge between two connected nodes,
@@ -235,7 +235,7 @@ icosahedralGraph =
                  (9,10),(10,11)]
     in GraphInfo 12 edges
 
-{-
+{-|
     Generate the Krackhardt-Kite Graph.
 
     Contains only one edge between two connected nodes,
@@ -249,7 +249,7 @@ krackhardtKiteGraph =
                  (7,8),(8,9)]
     in GraphInfo 10 edges
 
-{-
+{-|
     Generate the Möbius-Kantor Graph.
 
     Contains only one edge between two connected nodes,
@@ -263,13 +263,27 @@ moebiusKantorGraph =
                  (8,13),(9,10),(10,11),(10,15),(11,12),(12,13),(13,14),(14,15)]
     in GraphInfo 16 edges
 
+
+{-|
+    Generate the octahedral graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 octahedralGraph :: GraphInfo
 octahedralGraph =
     let edges = [(0,1),(0,2),(0,3),(0,4),(1,2),(1,3),(1,5),(2,4),
                  (2,5),(3,4),(3,5),(4,5)]
     in GraphInfo 6 edges
 
+{-|
+    Generate the Chvatal graph.
 
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 chvatalGraph :: GraphInfo
 chvatalGraph =
     let edges = [(0,1),(0,4),(0,6),(0,9),(1,2),(1,5),(1,7),(2,8),(2,3),
@@ -277,13 +291,26 @@ chvatalGraph =
                  (6,10),(7,8),(7,11),(8,10),(9,11),(9,10)]
     in GraphInfo 12 edges
 
+{-|
+    Generate the cubical graph.
 
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 cubicalGraph :: GraphInfo
 cubicalGraph =
     let edges = [(0,1),(0,3),(0,4),(1,2),(1,7),(2,3),(2,6),(3,5),(4,5),
                  (4,7),(5,6),(6,7)]
     in GraphInfo 8 edges
 
+{-|
+    Generate the Desargues graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 desarguesGraph :: GraphInfo
 desarguesGraph =
     let edges = [(0,1),(0,19),(0,5),(1,16),(1,2),(2,11),(2,3),(3,4),
@@ -292,11 +319,25 @@ desarguesGraph =
                  (12,13),(13,14),(14,15),(15,16),(16,17),(17,18),(18,19)]
     in GraphInfo 20 edges
 
+{-|
+    Generate the tetrahedral graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 tetrahedralGraph :: GraphInfo
 tetrahedralGraph =
     let edges = [(0,1),(0,2),(0,3),(1,2),(1,3),(2,3)]
     in GraphInfo 4 edges
 
+{-|
+    Generate the truncated cube graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 truncatedCubeGraph :: GraphInfo
 truncatedCubeGraph =
     let edges = [(0,1),(0,2),(0,4),(1,11),(1,14),(2,3),(2,4),(3,8),(3,6),
@@ -306,12 +347,26 @@ truncatedCubeGraph =
                  (19,23),(20,21),(21,22),(22,23)]
     in GraphInfo 24 edges
 
+{-|
+    Generate the truncated tetrahedron graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 truncatedTetrahedronGraph :: GraphInfo
 truncatedTetrahedronGraph =
     let edges = [(0,1),(0,2),(0,9),(1,2),(1,6),(2,3),(3,11),(3,4),(4,11),
                  (4,5),(5,6),(5,7),(6,7),(7,8),(8,9),(8,10),(9,10),(10,11)]
     in GraphInfo 12 edges
 
+{-|
+    Generate the Tutte graph.
+
+    Contains only one edge between two connected nodes,
+    use 'Data.Graph.Inductive.Basic.undir' to make it
+    quasi-undirected.
+-}
 tutteGraph :: GraphInfo
 tutteGraph =
     let edges = [(0,1),(0,2),(0,3),(1,26),(1,4),(2,10),(2,11),(3,18),(3,19),
@@ -325,7 +380,7 @@ tutteGraph =
                  (36,39),(37,38),(40,41),(40,44),(41,42),(42,43),(42,45),(43,44)]
     in GraphInfo 46 edges
 
-{-
+{-|
     The null graph with no nodes and edges
 -}
 nullGraph :: GraphInfo

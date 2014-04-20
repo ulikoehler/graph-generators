@@ -1,6 +1,6 @@
 {-# LANGUAGE Safe #-}
 
-{-
+{-|
     Graph generators for simple parametric, regular graphs.
 
     Built using NetworkX 1.8.1, see <http://networkx.github.io/documentation/latest/reference/generators.html NetworkX Generators>
@@ -34,7 +34,7 @@ module Data.Graph.Generators.Regular (
 import Data.Graph.Generators
 import Data.Graph.Generators.Classic (nullGraph)
 
-{-
+{-|
     Generate a completely connected graph with n nodes.
 
     The generated graph contains node labels [0..n-1]
@@ -56,7 +56,7 @@ completeGraph n =
         allEdges = [(i, j) | i <- allNodes,j <- allNodes, i < j]
     in GraphInfo n allEdges
 
-{-
+{-|
     Variant of 'completeGraph' generating self-loops.
 
     All generated edges (i,j) satisfy @i <= j@.
@@ -72,7 +72,7 @@ completeGraphWithSelfloops n =
         allEdges = [(i, j) | i <- allNodes, j <- allNodes, i <= j]
     in GraphInfo n allEdges
 
-{-
+{-|
     Generate the complete bipartite graph with n1 nodes in
     the first partition and n2 nodes in the second partition.
 
@@ -97,7 +97,7 @@ completeBipartiteGraph n1 n2 =
         allEdges = [(i, j) | i <- nodesP1, j <- nodesP2]
     in GraphInfo (n1+n2) allEdges
 
-{-
+{-|
     Generates the empty graph with n nodes and zero edges.
 
     The nodes are labelled [0..n-1]
@@ -107,7 +107,7 @@ completeBipartiteGraph n1 n2 =
 emptyGraph :: Int -> GraphInfo
 emptyGraph n = GraphInfo n []
 
-{-
+{-|
     Generate the barbell graph, consisting of two complete subgraphs
     connected by a single path.
 
@@ -123,7 +123,7 @@ barbellGraph :: Int -- ^ The number of nodes in the complete bells
              -> GraphInfo -- ^ The resulting barbell graph
 barbellGraph n np = generalizedBarbellGraph n np n
 
-{-
+{-|
     Generate the barbell graph, consisting of two complete subgraphs
     connected by a single path.
 
@@ -149,7 +149,7 @@ generalizedBarbellGraph n1 np n2 =
         edgesP2 = [(i, j) | i <- nodesP2, j <- nodesP2]
     in GraphInfo (n1+np+n2) (edgesP1 ++ edgesPath ++ edgesP2)
 
-{-
+{-|
     Generate the cycle graph of size n.
 
     Edges are created from lower node IDs to higher node IDs.
@@ -164,7 +164,7 @@ cycleGraph n =
     let edges = (n-1, 0) : [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
 
-{-
+{-|
     Generate the path graph of size n,
     consisting of n nodes that are interconnected in a single path.
 
@@ -178,7 +178,7 @@ pathGraph n =
     let edges = [(i, i+1) | i <- [0..n-2]]
     in GraphInfo n edges
 
-{-
+{-|
     Generate the star graph with n nodes:
     One central node (ID 0) connected to n-1
     outer nodes, having no interconnections themselves
@@ -193,7 +193,7 @@ starGraph n =
     let edges = [(0,i) | i <- [1..n-1]]
     in GraphInfo n edges
 
-{-
+{-|
     Generate the wheel graph with n nodes:
     One central node (ID 0) connected to n-1
     outer nodes building a cycle graph.
@@ -209,7 +209,7 @@ wheelGraph n =
                   ++ [(i, i+1) | i <- [1..n-2]]
     in GraphInfo n edges
 
-{-
+{-|
     Generate the 2D grid graph of dimensions m*n
 
     Algorithm courtesy

@@ -1,4 +1,4 @@
-{-
+{-|
   Implementations of binomially random graphs, as described by Erdős and Rényi.
 
   Graphs generated using this method have a constant edge probability between two nodes.
@@ -32,7 +32,7 @@ import Control.Monad
 import Data.Graph.Generators
 import Control.Applicative ((<$>))
 
-{-
+{-|
     Generate a unlabelled context using the Erdős and Rényi method.
 
     See 'erdosRenyiGraph' for a detailed algorithm description.
@@ -55,7 +55,7 @@ erdosRenyiContext gen n allNodes p = do
     outEdges <- endpoints
     return $ GraphContext inEdges n outEdges
 
-{-
+{-|
     Generate a unlabelled directed random graph using the Algorithm introduced by
     Erdős and Rényi, also called a binomial random graph generator.
 
@@ -88,7 +88,7 @@ erdosRenyiGraph gen n p = do
     allEdges <- concat <$> mapM singleNodeEdges allNodes
     return $ GraphInfo n allEdges
 
-{-
+{-|
     Like 'erdosRenyiGraph', but uses a newly initialized random number generator.
 
     See 'System.Random.MWC.withSystemRandom' for details on how the generator is
@@ -107,7 +107,7 @@ erdosRenyiGraph' :: Int    -- ^ The number of nodes
 erdosRenyiGraph' n p =
     withSystemRandom . asGenIO $ \gen -> erdosRenyiGraph gen n p
 
-{-
+{-|
     Filter a list by selecting each list element
     uniformly with a given probability p
 

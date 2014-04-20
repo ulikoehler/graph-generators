@@ -1,4 +1,4 @@
-{-
+{-|
     Random graph generators using the generator algorithm
     introduced by A. L. Barabási and R. Albert.
 
@@ -74,7 +74,7 @@ selectNDistinctRandomElementsWorker gen n t@(ms, msSize) current = do
 --   TODO: Remove this declaration from global namespace
 type BarabasiState = (IntMultiSet, [Int], [(Int, Int)])
 
-{-
+{-|
     Generate a random quasi-undirected Barabasi graph.
 
     Only one edge (with nondeterministic direction) is created between a node pair,
@@ -112,7 +112,7 @@ barabasiAlbertGraph gen n m = do
     (_, _, allEdges) <- foldM folder initState [m..n-1]
     return $ GraphInfo n allEdges
 
-{-
+{-|
     Like 'barabasiAlbertGraph', but uses a newly initialized random number generator.
 
     See 'System.Random.MWC.withSystemRandom' for details on how the generator is

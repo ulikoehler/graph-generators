@@ -89,8 +89,13 @@ wattsStrogatzGraph gen n k p = do
               [ (i, j) | (i,s) <- Map.toList initialEdges, j <- toList s ]
   return $ GraphInfo n allEdges
   where
-    rewrites edges tuples = do
-      
+    rewrites edges [] = return edges
+    rewrites edges (t:tuples) = do
+      r <- uniform gen :: IO Double
+      if (r > p)
+        then return rewrites edges tuples
+        else do es <- rewrite t edges
+                return rewrites es tuples
     rewrite (i, j1) edges = do
       r <- uniform gen :: IO Double
       let j2 = Math.floor $ r*n

@@ -31,6 +31,8 @@ import System.Random.MWC
 import Control.Monad
 import Data.Graph.Generators
 import Control.Applicative ((<$>))
+import qualified Data.Map as Map
+import qualified Data.Set as Set
 
 {-|
     Generate a small-world context using the Wattz Strogatz method.
@@ -82,34 +84,52 @@ wattsStrogatzGraph gen n k p = do
   let allNodes = [0..n-1]
   -- Outgoing edge targets for any node
   let insert m (i, js) = Map.insert i js m
-  let forward_neighbors i = foldl (Set.insert) Set.empty $ fmap (`mod` n) [i+1..i+(k/2)]
-  let initialEdges = foldl (insert) (Map.empty)
-      [ (i, forward_neighbors i) | i <- allNodes ]
-  allEdges <- rewrites initialEdges $
-              [ (i, j) | (i,s) <- Map.toList initialEdges, j <- toList s ]
-  return $ GraphInfo n allEdges
+  let initialEdges = foldl (insert) (Map.empty) [ (i, forward_neighbors i) | i <- allNodes ]
+  allEdges <- rewrites (return initialEdges) $
+              [ (i, j) |
+                (i,s) <- Map.toList initialEdges,
+                j <- Set.toList s ]
+  return $ GraphInfo n (delineate allEdges)
   where
-    rewrites edges [] = return edges
-    rewrites edges (t:tuples) = do
+    k' = fromInteger.toInteger $ k
+    forward_neighbors :: Int -> Set.Set Int 
+    forward_neighbors i = foldr (Set.insert) Set.empty $
+                          fmap (`mod` n)
+                          [i+1..i+k']
+    rewrites :: IO (Map.Map Int (Set.Set Int))
+             -> [(Int, Int)]
+             -> IO (Map.Map Int (Set.Set Int))
+    rewrites ioedges [] = ioedges
+    rewrites ioedges (t:tuples) = do
       r <- uniform gen :: IO Double
+      edges <- ioedges :: IO (Map.Map Int (Set.Set Int))
       if (r > p)
-        then return rewrites edges tuples
+        then rewrites (return edges) tuples
         else do es <- rewrite t edges
-                return rewrites es tuples
+                rewrites (return es) tuples
     rewrite (i, j1) edges = do
       r <- uniform gen :: IO Double
-      let j2 = Math.floor $ r*n
-      if (edgeExists i j2 || edgeExists j2 i)
+      let j2 = floor $ r*((fromInteger.toInteger) n)
+      if (member (i, j2) edges || member (j2, i) edges)
         then rewrite (i, j1) edges
         else return $ swap (i, j1) (i, j2) edges
 
-member (i, j) = Set.member j (Map.findWithDefault Set.empty i edges))
+delineate :: Map.Map a (Set.Set b) -> [(a, b)]
+delineate m = [ (i, j) |
+                (i, js) <- Map.toList m,
+                j <- Set.toList js ]
 
-swap :: (a, b) -> (a, b) -> Map a (Set b) -> Map a (Set b)
+member :: (Int, Int) -> Map.Map Int (Set.Set Int) -> Bool
+member (i, j) m = Set.member j (Map.findWithDefault Set.empty i m)
+
+swap :: (Ord a, Ord b)
+        => (a, b) -> (a, b)
+        -> Map.Map a (Set.Set b)
+        -> Map.Map a (Set.Set b)
 swap (k1, v1) (k2, v2) m =
-  let set1 = Map.lookup k1 m in
+  let set1 = Map.findWithDefault Set.empty k1 m in
   let set2 = Set.insert v2 $ Set.delete v1 set1 in
-  let m2 = Map.insert k2 v2 $ Map.delete k1 m in m2
+  let m2 = Map.insert k2 set2 $ Map.delete k1 m in m2
 
 {-|
     Like 'wattsStrogatzGraph', but uses a newly initialized random number generator.
@@ -128,8 +148,8 @@ wattsStrogatzGraph' :: Int    -- ^ n, The number of nodes
                  -> Int    -- ^ k, the size of the neighborhood / degree (should be even)
                  -> Double -- ^ \beta, The probability of a forward edge getting rewritten
                  -> IO GraphInfo -- ^ The resulting graph (IO required for randomness)
-wattsStrogatzGraph' n p =
-    withSystemRandom . asGenIO $ \gen -> wattsStrogatzGraph gen n p
+wattsStrogatzGraph' n k p =
+    withSystemRandom . asGenIO $ \gen -> wattsStrogatzGraph gen n k p
 
 selectWithProbability :: GenIO  -- ^ The random generator state
                       -> Double -- ^ The probability to select each list element

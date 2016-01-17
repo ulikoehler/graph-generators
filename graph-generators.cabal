@@ -1,5 +1,5 @@
 name:                graph-generators
-version:             0.1.2.1
+version:             0.1.2.2
 synopsis:            Functions for generating structured or random FGL graphs
 description:         Generators for graphs.
                      Supports classic (constant-sized) graphs, deterministic Generators
@@ -33,6 +33,7 @@ library
                    Data.Graph.Generators.Regular,
                    Data.Graph.Generators.FGL,
                    Data.Graph.Generators.Random.ErdosRenyi,
+                   Data.Graph.Generators.Random.WattsStrogatz,
                    Data.Graph.Generators.Random.BarabasiAlbert
   -- other-modules:
   -- other-extensions:
@@ -41,6 +42,21 @@ library
   -- hs-source-dirs:
   default-language:    Haskell2010
 
+Executable TestGen
+  Main-Is:        TestGen.hs
+  other-modules: Data.Graph.Generators,
+                 Data.Graph.Generators.Classic,
+                 Data.Graph.Generators.Regular,
+                 Data.Graph.Generators.FGL,
+                 Data.Graph.Generators.Random.ErdosRenyi,
+                 Data.Graph.Generators.Random.WattsStrogatz,
+                 Data.Graph.Generators.Random.BarabasiAlbert
+  -- other-extensions:
+  build-depends:       base >= 4.2.0.1 && < 4.8, directory, containers >= 0.3, mwc-random >= 0.10, fgl >= 5.0,
+                       multiset >= 0.2
+  -- hs-source-dirs:
+  default-language:    Haskell2010
+  
 Test-Suite test-graph-generators
     type:       exitcode-stdio-1.0
     main-is:    GraphGeneratorsTest.hs

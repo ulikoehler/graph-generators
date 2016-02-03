@@ -40,6 +40,6 @@ main = do
   writeGraph (sampleDir ++ "/ErdosRenyiGraph.dot") eG
   writeGraph (sampleDir ++ "/WattsStrogatz.dot") wG
   writeGraph (sampleDir ++ "/BarabasiAlbertGraph.dot") bG
-  putStrLn "hello World."
+  putStrLn "Sample DOT files have been generated in ./dist/build/samples"
 
 

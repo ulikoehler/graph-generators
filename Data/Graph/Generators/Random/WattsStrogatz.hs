@@ -110,7 +110,7 @@ wattsStrogatzGraph gen n k p = do
     rewrite (i, j1) edges = do
       r <- uniform gen :: IO Double
       let j2 = floor $ r*((fromInteger.toInteger) n)
-      if (member (i, j2) edges || member (j2, i) edges)
+      if (((member (i, j2) edges) || (member (j2, i) edges)) || (i == j2)) 
         then rewrite (i, j1) edges
         else return $ swap (i, j1) (i, j2) edges
 

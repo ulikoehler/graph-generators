@@ -1,5 +1,11 @@
 ** 0.1.x
 
+0.1.3.0 --> 0.1.4.0
+==============
+
+Removed self loops from WattsStrogatz graph model
+Credits to @shrutihiray
+
 0.1.2.0 --> 0.1.2.1
 ===============
 
